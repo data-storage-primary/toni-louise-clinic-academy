@@ -1,0 +1,3506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toni-Louise Clinic and Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500&family=The+Nautigal&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --charcoal: #141414;
+    --panel: #1a1a1a;
+    --line: #2c2618;
+    --gold: #c9a54c;
+    --gold-light: #e8cf8a;
+    --gold-dark: #9c7c2e;
+    --ink: #f3ede0;
+    --muted: #a39a86;
+    --gold-gradient: linear-gradient(135deg, #9c7c2e 0%, #e8cf8a 45%, #c9a54c 70%, #9c7c2e 100%);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--black); }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background:
+      radial-gradient(ellipse at top, rgba(201, 165, 76, 0.10), transparent 60%),
+      var(--black);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    text-align: center;
+    padding: 56px 16px 40px;
+    position: relative;
+  }
+  /* ---------- Portfolio Insights ---------- */
+  .view-wide { max-width: 880px; }
+  .insights-status { color: var(--muted); font-size: 0.85rem; min-height: 1.2em; margin-bottom: 8px; }
+  .insights-heading {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600;
+    color: var(--gold-light); text-align: left; margin: 22px 0 12px;
+  }
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .kpi-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 600px) { .kpi-grid, .kpi-grid-3 { grid-template-columns: 1fr; } }
+  .kpi {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 20px 22px; text-align: left; display: flex; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 22px; right: 22px; height: 2px;
+    background: var(--gold-gradient);
+  }
+  .kpi-active::before { background: linear-gradient(90deg, #3f8f57, #6fcf8a); }
+  .kpi-redeemed::before { background: linear-gradient(90deg, #b8691f, #f0a24f); }
+  .kpi-expired::before { background: linear-gradient(90deg, #7a2e25, #e08a78); }
+  .kpi-expired.has-expired .kpi-value { color: #e08a78; }
+  .kpi-link { cursor: pointer; transition: border-color 0.2s ease; }
+  .kpi-link:hover, .kpi-link:focus-visible { border-color: var(--gold-dark); outline: none; }
+
+  /* ---------- Expired renewals ---------- */
+  .expired-list { list-style: none; display: grid; gap: 12px; text-align: left; }
+  .expired-item {
+    background: var(--panel); border: 1px solid var(--line); border-left: 3px solid #a8352a;
+    border-radius: 4px; padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .expired-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--gold-light); }
+  .expired-meta { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+  .expired-meta strong { color: var(--ink); font-weight: 400; }
+  .expired-right { text-align: right; }
+  .expired-date { color: var(--ink); font-size: 0.9rem; }
+  .overdue-badge {
+    display: inline-block; margin-top: 6px; padding: 3px 10px; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    background: rgba(192, 72, 58, 0.15); color: #f0a397; border: 1px solid #7a2e25;
+  }
+  @media (max-width: 480px) { .expired-right { text-align: left; } }
+  @media (max-width: 480px) {
+    .expired-item { flex-wrap: wrap; row-gap: 10px; }
+    .expired-right { flex-basis: 100%; padding-left: 34px; }
+  }
+  .expired-main { flex: 1; min-width: 0; }
+  .expired-item.is-pending { border-left-color: #b8691f; opacity: 0.85; }
+  .expired-check { display: flex; align-items: center; cursor: pointer; }
+  .expired-check input, .bulk-all input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+  .expired-check input:disabled { cursor: not-allowed; opacity: 0.35; }
+  .expired-item { flex-wrap: wrap; }
+  .row-actions {
+    flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end;
+    padding-top: 12px; border-top: 1px solid var(--line);
+  }
+  @media (max-width: 480px) { .row-actions { justify-content: flex-start; } .row-actions .redeem-btn { flex: 1 1 auto; } }
+  .redeem-btn.danger { border-color: #7a2e25; color: #f0a397; }
+  .redeem-btn.danger:hover:not(:disabled) { border-color: #c8493c; background: rgba(192, 72, 58, 0.12); }
+  .bulk-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bulk-act {
+    padding: 9px 14px; border-radius: 3px; cursor: pointer; white-space: nowrap;
+    background: var(--gold-gradient); border: 1px solid var(--gold); color: var(--black);
+    font-family: inherit; font-size: 0.72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .bulk-act.danger { background: #a8352a; border-color: #c8493c; color: #fff; }
+  .bulk-act:disabled { opacity: 0.3; cursor: not-allowed; }
+  @media (max-width: 480px) { .bulk-actions { width: 100%; } .bulk-act { flex: 1 1 auto; } }
+  .modal p.warn-text { color: #f0a397; }
+  .type-confirm {
+    display: block; margin: 4px 0 16px; font-size: 0.85rem; color: var(--muted); text-align: center;
+  }
+  .type-confirm strong { color: #f0a397; letter-spacing: 1px; }
+  .type-confirm .field { margin-top: 8px; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
+  .mini-status { font-size: 0.8rem; }
+  .mini-status.active { color: #6fcf8a; }
+  .mini-status.pending { color: #f0a24f; }
+  .bulk-bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 12px 16px 12px 20px; margin-bottom: 4px;
+  }
+  .bulk-all { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--ink); font-size: 0.9rem; }
+  .bulk-btn { flex: 0 0 auto; padding: 10px 16px; font-size: 0.75rem; }
+  .bulk-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .modal-names { list-style: none; margin: 4px 0 14px; text-align: center; color: var(--gold-light); line-height: 1.7; }
+  .expired-list .empty {
+    background: var(--panel); border: 1px dashed var(--line); border-radius: 4px;
+    padding: 28px 20px; color: var(--muted); text-align: center;
+  }
+  .kpi-label { flex-grow: 1; }   /* keeps the numbers lined up when labels wrap */
+  .kpi-label { font-size: 0.72rem; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gold); line-height: 1.5; }
+  .kpi-value {
+    font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 600; line-height: 1;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .kpi-sub { color: var(--muted); font-size: 0.8rem; min-height: 1em; }
+
+  /* ---------- Development banner ---------- */
+  .dev-banner {
+    background: #ffd400; color: #000; overflow: hidden; white-space: nowrap;
+    border-bottom: 2px solid #000; position: relative;
+  }
+  body:not([data-view="home"]) .dev-banner { display: none; }
+  .dev-track {
+    display: inline-flex; padding: 10px 0;
+    animation: dev-scroll 60s linear infinite;
+  }
+  .dev-track span {
+    padding-right: 4rem;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.3px;
+  }
+  .dev-banner:hover .dev-track { animation-play-state: paused; }
+  @keyframes dev-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .dev-track { animation: none; display: block; text-align: center; white-space: normal; padding: 10px 16px; }
+    .dev-track span:not(:first-child) { display: none; }
+    .dev-track span { padding-right: 0; }
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Splash ---------- */
+  .splash {
+    position: fixed; inset: 0; z-index: 200;
+    background: radial-gradient(ellipse at center, rgba(201, 165, 76, 0.12), transparent 60%), var(--black);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    cursor: pointer; transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  .splash img {
+    max-width: min(80vw, 520px); max-height: 70vh; width: auto; height: auto; object-fit: contain;
+    opacity: 0; transform: scale(0.94);
+    transition: opacity 1s ease, transform 1.4s cubic-bezier(.2, .7, .2, 1);
+  }
+  .splash.show img { opacity: 1; transform: scale(1); }
+  .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-on body { overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    .splash, .splash img { transition-duration: 0.3s; }
+    .splash img { transform: none; }
+  }
+
+  .gold-text {
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header h1 {
+    display: inline-flex; flex-direction: column; align-items: flex-end;
+    font-weight: normal;
+    max-width: 100%;
+  }
+  .title-script {
+    font-family: 'The Nautigal', cursive;
+    font-weight: 400;
+    font-size: clamp(4.4rem, 20vw, 8rem);
+    line-height: 0.95;
+    padding: 0 0.12em 0.08em;   /* room for the swashes so the gold isn't clipped */
+  }
+  .title-caps {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 3.6vw, 1.45rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: -0.35em;
+    padding-right: 0.4em;
+  }
+  .divider {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 18px auto 14px; max-width: 320px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .divider::after { background: linear-gradient(90deg, var(--gold), transparent); }
+  .divider span { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
+  header p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  @media (max-width: 520px) {
+    header p { font-size: 0.7rem; letter-spacing: 2px; white-space: nowrap; }
+  }
+  @media (max-width: 340px) {
+    header p { font-size: 0.62rem; letter-spacing: 1.2px; }
+  }
+
+  /* ---------- Main ---------- */
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 16px 16px 56px;
+  }
+  .home { width: 100%; max-width: 720px; text-align: center; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .back {
+    background: none; border: none; cursor: pointer;
+    color: var(--gold); font-family: inherit; font-size: 0.85rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .back:hover { color: var(--gold-light); text-decoration: underline; text-underline-offset: 4px; }
+  [hidden] { display: none !important; }
+
+  /* ---------- Forms ---------- */
+  .panel-form {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 32px 28px;
+    text-align: left;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  @media (max-width: 480px) { .panel-form { padding: 24px 18px; } }
+  .panel-form label {
+    display: block; margin: 18px 0 8px;
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
+  }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .row-2 label { margin-top: 0; }
+  @media (max-width: 480px) { .row-2 { grid-template-columns: 1fr; } .row-2 > div + div label { margin-top: 18px; } }
+  .field {
+    width: 100%; padding: 13px 14px;
+    background: var(--black); color: var(--ink);
+    border: 1px solid #3a3322; border-radius: 3px;
+    font-family: inherit; font-size: 1rem; font-weight: 400;
+  }
+  .field::placeholder { color: #5e574a; }
+  .field:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 165, 76, 0.15); }
+  .field.invalid { border-color: #c0614f; box-shadow: 0 0 0 3px rgba(192, 97, 79, 0.15); }
+  .hint { color: var(--muted); font-size: 0.8rem; margin-top: 6px; }
+  .form-msg { min-height: 1.2em; margin-top: 16px; font-size: 0.9rem; color: #e08a78; }
+
+  .month-picker { position: relative; }
+  .month-btn { display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left; }
+  .month-btn svg { color: var(--gold); }
+  .month-pop {
+    position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0;
+    background: var(--charcoal); border: 1px solid var(--gold-dark); border-radius: 4px;
+    padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  }
+  .month-pop button {
+    padding: 11px 6px; background: transparent; color: var(--ink);
+    border: 1px solid transparent; border-radius: 3px;
+    font-family: inherit; font-size: 0.9rem; cursor: pointer;
+  }
+  .month-pop button:hover { border-color: var(--gold-dark); color: var(--gold-light); }
+  .month-pop button.selected { background: var(--gold-gradient); color: var(--black); font-weight: 500; }
+
+  .form-actions { display: flex; gap: 12px; margin-top: 20px; }
+  .form-actions > * { flex: 1; }
+  .btn-gold, .btn-outline {
+    padding: 14px 18px; border-radius: 3px; cursor: pointer;
+    font-family: inherit; font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s ease;
+  }
+  .btn-gold { background: var(--gold-gradient); border: 1px solid var(--gold); color: var(--black); }
+  .btn-gold:hover { box-shadow: 0 6px 22px rgba(201, 165, 76, 0.3); }
+  .btn-gold:disabled { opacity: 0.6; cursor: wait; }
+  .btn-outline { background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-light); }
+  .btn-outline:hover { border-color: var(--gold); background: rgba(201, 165, 76, 0.08); }
+
+  /* ---------- Pop-up ---------- */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal {
+    width: 100%; max-width: 440px;
+    background: var(--charcoal); border: 1px solid var(--gold-dark); border-radius: 4px;
+    padding: 28px 24px; text-align: left;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  }
+  .modal h3 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600;
+    color: var(--gold-light); margin-bottom: 12px; text-align: center;
+  }
+  .modal p { color: var(--muted); line-height: 1.6; text-align: center; }
+  .modal .form-msg:empty { display: none; }
+  .modal dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin: 8px 0 18px; }
+  .modal dt { color: var(--gold); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; padding-top: 2px; }
+  .modal dd { color: var(--ink); font-weight: 400; word-break: break-word; }
+
+  /* ---------- Member account ---------- */
+  .account-card { padding: 8px 28px; }
+  .account-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 20px 0; border-bottom: 1px solid var(--line);
+  }
+  .account-row:last-child { border-bottom: none; }
+  .panel-form .account-label { margin: 0; }
+  .account-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+  .account-value { color: var(--ink); font-weight: 400; text-align: right; }
+  @media (max-width: 480px) {
+    .account-card { padding: 4px 18px; }
+    .account-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .account-value { text-align: left; }
+  }
+  .status-badge {
+    display: inline-block; padding: 6px 14px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    background: rgba(163, 154, 134, 0.15); color: var(--muted); border: 1px solid #3a3322;
+  }
+  .status-badge.pending { background: rgba(232, 139, 44, 0.15); color: #f0a24f; border-color: #b8691f; }
+  .status-badge.active { background: rgba(76, 175, 106, 0.15); color: #6fcf8a; border-color: #3f8f57; }
+  .account-actions { max-width: 520px; margin: 20px auto 0; }
+  .code-box {
+    width: 180px; max-width: 100%; padding: 10px 14px;
+    background: var(--black); border: 1px dashed #3a3322; border-radius: 3px;
+    color: var(--muted); font-family: inherit; font-size: 1rem; text-align: center;
+    letter-spacing: 3px; cursor: default; pointer-events: none;
+  }
+  .code-box:focus { outline: none; }
+  .code-box.has-code {
+    border: 1px solid var(--gold); color: var(--gold-light);
+    font-weight: 500; letter-spacing: 4px; pointer-events: auto; user-select: all;
+  }
+  .code-box.awaiting { letter-spacing: 0.5px; font-size: 0.85rem; }
+  @media (max-width: 480px) { .code-box { width: 100%; } }
+  .code-wrap { display: flex; align-items: stretch; gap: 8px; }
+  @media (max-width: 480px) { .code-wrap { width: 100%; } .code-wrap .code-box { flex: 1; width: auto; min-width: 0; } }
+  .copy-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 14px; border-radius: 3px; cursor: pointer;
+    background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-light);
+    font-family: inherit; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .copy-btn:hover { border-color: var(--gold); background: rgba(201, 165, 76, 0.1); }
+  .copy-btn.copied { border-color: #3f8f57; color: #6fcf8a; background: rgba(76, 175, 106, 0.12); }
+
+  /* ---------- Admin ---------- */
+  .text-link {
+    display: block; margin: 18px auto 0; background: none; border: none; cursor: pointer;
+    color: var(--gold); font-family: inherit; font-size: 0.85rem;
+    text-decoration: underline; text-underline-offset: 4px;
+  }
+  .text-link:hover { color: var(--gold-light); }
+  .form-msg.ok { color: #6fcf8a; }
+  .admin-bar { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+  .admin-bar strong { color: var(--gold-light); font-weight: 400; }
+
+  /* ---------- Update member ---------- */
+  select.field {
+    appearance: none; cursor: pointer; color-scheme: dark;
+    background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%), linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+    background-size: 6px 6px; background-repeat: no-repeat; padding-right: 40px;
+  }
+  input[type="date"].field { color-scheme: dark; }
+  .panel-form + .panel-form { margin-top: 16px; }
+  .panel-form > label:first-child { margin-top: 0; }
+  .up-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600;
+    color: var(--gold-light); margin-bottom: 18px;
+  }
+  .toggle-group { display: flex; gap: 10px; }
+  .toggle {
+    flex: 1; padding: 11px 14px; border-radius: 999px; cursor: pointer;
+    background: transparent; border: 1px solid #3a3322; color: var(--muted);
+    font-family: inherit; font-size: 0.8rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: all 0.15s ease;
+  }
+  .toggle:hover { border-color: var(--gold-dark); color: var(--ink); }
+  .toggle.pending.selected { background: rgba(232, 139, 44, 0.15); color: #f0a24f; border-color: #b8691f; }
+  .toggle.active.selected { background: rgba(76, 175, 106, 0.15); color: #6fcf8a; border-color: #3f8f57; }
+  .up-info { color: var(--muted); font-size: 0.8rem; margin-top: 18px; line-height: 1.6; }
+  .up-info strong { color: var(--ink); font-weight: 400; }
+  .modal .changes dd del { color: var(--muted); }
+  /* ---------- Clubs ---------- */
+  .clubs-row { align-items: flex-start; }
+  .club-list { list-style: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .club-list-left { align-items: flex-start; }
+  .club-list li {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    color: var(--ink); font-weight: 400;
+  }
+  .club-list .club-name::before {
+    content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 10px;
+    background: var(--gold); transform: rotate(45deg) translateY(-2px);
+  }
+  .club-details {
+    margin-top: 20px; padding: 20px 20px 8px;
+    border: 1px solid var(--line); border-radius: 4px; background: var(--black);
+  }
+  .club-details h4 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: 1.35rem; color: var(--gold-light); margin-bottom: 10px; text-align: center;
+  }
+  .club-details ul { list-style: none; margin-bottom: 18px; }
+  .club-details li {
+    position: relative; padding: 6px 0 6px 28px; color: var(--ink); font-weight: 300; line-height: 1.5;
+  }
+  .club-details li::before {
+    content: '\2713'; position: absolute; left: 2px; top: 5px;
+    color: var(--gold); font-weight: 600;
+  }
+  .club-details li strong { color: var(--gold-light); font-weight: 500; white-space: nowrap; }
+  .club-details .tbc { color: var(--muted); text-align: center; padding: 4px 0 14px; font-size: 0.9rem; }
+  .club-added { color: var(--muted); font-size: 0.8rem; font-weight: 300; }
+  .renewal-line { display: block; }
+  .modal p.overlap-note { color: #f0a24f; font-size: 0.85rem; }
+  .days-left { color: var(--muted); font-weight: 300; white-space: nowrap; }
+  .days-left.soon { color: #f0a24f; }
+  .days-left.overdue { color: #e08a78; }
+  .club-renewal {
+    display: inline-block; margin: 6px 0 0 16px; padding: 2px 10px; border-radius: 999px;
+    font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gold-light); border: 1px solid var(--gold-dark);
+  }
+  .club-list { width: 100%; max-width: 320px; }
+  .club-list-left { max-width: none; }
+  .club-list li.club-item { display: block; width: 100%; }
+  .club-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .session-list { list-style: none; margin: 8px 0 4px 16px; border-left: 1px solid var(--line); padding-left: 12px; }
+  .club-list .session-list li {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 5px 0; font-size: 0.9rem; font-weight: 300; color: var(--ink);
+    flex-wrap: nowrap;
+  }
+  .club-list .session-list li > span:first-child { min-width: 0; }
+  .session-count {
+    padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+    background: rgba(232, 139, 44, 0.12); color: #f0a24f; border: 1px solid #b8691f;
+  }
+  .session-count.done { background: transparent; color: var(--muted); border-color: #3a3322; }
+  .clubs-row { flex-wrap: wrap; }
+  .session-last { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* ---------- Redeem sessions ---------- */
+  .redeem-list, .history-list { list-style: none; }
+  .redeem-list li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .redeem-list li:last-child { border-bottom: none; }
+  .redeem-name { flex: 1; min-width: 0; color: var(--ink); font-weight: 400; }
+  .redeem-btn {
+    padding: 8px 14px; border-radius: 3px; cursor: pointer; white-space: nowrap;
+    background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-light);
+    font-family: inherit; font-size: 0.72rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .redeem-btn:hover:not(:disabled) { border-color: var(--gold); background: rgba(201, 165, 76, 0.1); }
+  .redeem-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .history-list li {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 8px 0; border-bottom: 1px solid rgba(201, 165, 76, 0.08);
+    font-size: 0.85rem; color: var(--ink); font-weight: 300;
+  }
+  .history-list li span:last-child { color: var(--muted); white-space: nowrap; }
+  .history-list .empty { color: var(--muted); justify-content: flex-start; }
+  .history-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .history-row .history-list { width: 100%; }
+  .history-club { display: block; font-size: 0.75rem; color: var(--muted); }
+  @media (min-width: 481px) { .clubs-row .club-list { flex: 1; } }
+  .modal { max-height: calc(100vh - 32px); overflow-y: auto; }
+  .modal .club-details { margin: 6px 0 16px; text-align: left; }
+  .modal .club-details li { font-size: 0.9rem; }
+  .club-list .empty { color: var(--muted); font-weight: 300; }
+  @media (max-width: 480px) { .club-list { align-items: flex-start; } }
+  .club-toggles { flex-wrap: wrap; }
+  .club-toggles .toggle { flex: 1 1 45%; }
+  .club-toggles .toggle.selected { background: var(--gold-gradient); border-color: var(--gold); color: var(--black); }
+  .toggle-group.invalid .toggle { border-color: #c0614f; }
+
+  /* ---------- Delete member ---------- */
+  #del-summary .account-row { padding: 16px 0; }
+  .danger-note {
+    margin: 22px 0 4px; padding: 14px 16px; border-radius: 3px;
+    background: rgba(192, 72, 58, 0.12); border: 1px solid #7a2e25;
+    color: #f0a397; font-size: 0.9rem; line-height: 1.6;
+  }
+  .btn-danger {
+    padding: 14px 18px; border-radius: 3px; cursor: pointer;
+    font-family: inherit; font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s ease;
+    background: #a8352a; border: 1px solid #c8493c; color: #fff;
+  }
+  .btn-danger:hover { background: #c0402f; box-shadow: 0 6px 22px rgba(192, 64, 47, 0.35); }
+  .btn-danger:disabled { opacity: 0.6; cursor: wait; }
+  .modal.danger { border-color: #7a2e25; }
+  .modal.danger h3 { color: #f0a397; }
+
+  /* ---------- Help buttons (ⓘ How this page works) ---------- */
+  .help-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: -2px auto 22px; padding: 7px 16px 7px 8px; border-radius: 999px; cursor: pointer;
+    background: rgba(201, 165, 76, 0.08); border: 1px solid var(--gold-dark); color: var(--gold-light);
+    font-family: inherit; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+  }
+  .help-btn:hover, .help-btn:focus-visible { background: rgba(201, 165, 76, 0.18); border-color: var(--gold); outline: none; }
+  .help-btn .i {
+    width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--gold-gradient); color: var(--black);
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 700; font-size: 1rem;
+  }
+  .help-btn.attention .i { animation: help-pulse 2s ease-out 0.4s 2; }
+  @keyframes help-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(201, 165, 76, 0.7); }
+    100% { box-shadow: 0 0 0 12px rgba(201, 165, 76, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .help-btn.attention .i { animation: none; } }
+
+  /* Help pop-up content */
+  .modal.info { max-width: 480px; text-align: left; }
+  .modal.info h3 { text-align: center; }
+  .modal .guide-topic-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600;
+    color: var(--gold-light); margin: 16px 0 6px; text-align: left;
+  }
+  .modal .guide-topic-title:first-child { margin-top: 0; }
+  .guide-body p, .guide-body li { color: var(--ink); font-weight: 300; line-height: 1.6; text-align: left; font-size: 0.92rem; }
+  .guide-body p { margin-bottom: 8px; }
+  .guide-body ol, .guide-body ul { padding-left: 20px; margin-bottom: 8px; }
+  .guide-body li { margin-bottom: 4px; }
+  .guide-body strong { color: var(--gold-light); font-weight: 500; }
+  .guide-body .tip {
+    border-left: 2px solid var(--gold); padding: 6px 0 6px 12px; margin: 8px 0;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  .guide-body .careful {
+    border-left: 2px solid #c8493c; padding: 6px 0 6px 12px; margin: 8px 0;
+    color: #f0a397; font-size: 0.85rem;
+  }
+  .guide-body .chip-pending { color: #f0a24f; font-weight: 500; }
+  .guide-body .chip-active { color: #6fcf8a; font-weight: 500; }
+
+  /* Guide page */
+  .guide-intro { color: var(--muted); margin: -4px 0 18px; }
+  .guide-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .guide-tab {
+    padding: 10px 18px; border-radius: 999px; cursor: pointer;
+    background: transparent; border: 1px solid #3a3322; color: var(--muted);
+    font-family: inherit; font-size: 0.78rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .guide-tab[aria-selected="true"] { background: var(--gold-gradient); border-color: var(--gold); color: var(--black); }
+  .guide-list { display: grid; gap: 10px; text-align: left; }
+  .guide-item { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  .guide-item summary {
+    list-style: none; cursor: pointer; padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--gold-light);
+  }
+  .guide-item summary::-webkit-details-marker { display: none; }
+  .guide-item summary::after {
+    content: '+'; font-family: 'Inter', sans-serif; font-weight: 300; font-size: 1.4rem; color: var(--gold);
+    transition: transform 0.2s ease;
+  }
+  .guide-item[open] summary::after { transform: rotate(45deg); }
+  .guide-item[open] { border-color: var(--gold-dark); }
+  .guide-item .guide-body { padding: 0 20px 16px; }
+  .guide-item .where { display: block; font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+  /* ---------- Gratuity ---------- */
+  .gr-current { color: var(--muted); margin: -8px 0 4px; }
+  .gr-current strong { color: var(--gold-light); font-weight: 500; }
+  .stepper { display: flex; gap: 8px; align-items: stretch; }
+  .stepper .field { text-align: center; font-size: 1.2rem; flex: 1; -moz-appearance: textfield; }
+  .stepper .field::-webkit-outer-spin-button, .stepper .field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .step-btn {
+    width: 52px; flex-shrink: 0; border-radius: 3px; cursor: pointer;
+    background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-light);
+    font-size: 1.4rem; font-family: inherit; line-height: 1;
+  }
+  .step-btn:hover { border-color: var(--gold); background: rgba(201, 165, 76, 0.1); }
+
+  /* ---------- Administrator groups ---------- */
+  .admin-group {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+    margin: 30px 0 14px;
+  }
+  .admin-group::before, .admin-group::after {
+    content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dark));
+  }
+  .admin-group::after { background: linear-gradient(90deg, var(--gold-dark), transparent); }
+  #view-admin h2 + .admin-group { margin-top: 18px; }
+
+  /* ---------- Birthday Sessions ---------- */
+  .bd-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 480px) { .bd-summary { grid-template-columns: 1fr 1fr 1fr; gap: 8px; } }
+  .bd-stat {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 12px; text-align: center;
+  }
+  .bd-stat strong {
+    display: block; font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; line-height: 1;
+    color: var(--ink);
+  }
+  .bd-stat span { font-size: 0.68rem; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); }
+  .bd-stat.pending strong { color: #f0a24f; }
+  .bd-stat.done strong { color: #6fcf8a; }
+  .bd-filter { margin: 4px 0 18px; justify-content: flex-start; }
+  .bd-month { margin-bottom: 18px; text-align: left; }
+  .bd-month-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-bottom: 8px;
+  }
+  .bd-month-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.45rem; font-weight: 600; color: var(--gold-light); }
+  .bd-month-head .when { font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .bd-month.current .bd-month-head .when { color: var(--gold); }
+  .bd-rows { list-style: none; display: grid; gap: 8px; }
+  .bd-row {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .bd-name { color: var(--ink); font-weight: 400; }
+  .bd-meta { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+  .bd-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+  .bd-chip {
+    padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.5px; white-space: nowrap;
+    border: 1px solid #3a3322; color: var(--muted);
+  }
+  .bd-chip.pending { background: rgba(232, 139, 44, 0.12); color: #f0a24f; border-color: #b8691f; }
+  .bd-chip.done { background: rgba(76, 175, 106, 0.12); color: #6fcf8a; border-color: #3f8f57; }
+  @media (max-width: 480px) { .bd-chips { justify-content: flex-start; } }
+  #bd-list .empty {
+    background: var(--panel); border: 1px dashed var(--line); border-radius: 4px;
+    padding: 28px 20px; color: var(--muted); text-align: center;
+  }
+
+  /* ---------- On/off switch ---------- */
+  .switch-field {
+    display: flex; align-items: center; gap: 12px; margin-top: 20px;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: 4px; background: var(--black);
+  }
+  .switch-text { flex: 1; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+  .switch-field .switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; margin: 0; cursor: pointer; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+  .slider {
+    position: absolute; inset: 0; border-radius: 999px;
+    background: #2a2a2a; border: 1px solid #3a3322; transition: 0.2s;
+  }
+  .slider::before {
+    content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px;
+    background: var(--muted); border-radius: 50%; transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--gold-dark); border-color: var(--gold); }
+  .switch input:checked + .slider::before { transform: translateX(20px); background: var(--gold-light); }
+  .switch input:focus-visible + .slider { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .switch-state { width: 28px; font-size: 0.85rem; color: var(--muted); }
+  .switch-state.on { color: var(--gold-light); }
+
+  /* ---------- WhatsApp button ---------- */
+  .wa-wrap { margin-top: 12px; }
+  .btn-whatsapp {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 14px 18px; border-radius: 3px; text-decoration: none;
+    background: #25d366; border: 1px solid #1ebe5b; color: #08311a;
+    font-family: inherit; font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .btn-whatsapp:active { background: #1ebe5b; }
+  .btn-whatsapp.disabled { opacity: 0.35; pointer-events: none; }
+  .wa-wrap .hint { text-align: center; margin-top: 8px; }
+
+  .field[readonly] {
+    background: transparent; border-color: transparent; border-bottom-color: var(--line);
+    border-radius: 0; padding-left: 0; color: var(--ink); cursor: default; box-shadow: none;
+  }
+  .field[readonly]:focus { border-color: transparent; border-bottom-color: var(--line); box-shadow: none; }
+
+  /* ---------- Services ---------- */
+  .service-list {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px; text-align: left;
+  }
+  @media (max-width: 360px) { .service-list { grid-template-columns: 1fr; } }
+  .service {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 26px 24px; position: relative;
+  }
+  .service::before {
+    content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 2px;
+    background: var(--gold-gradient);
+  }
+  .service h3 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600;
+    color: var(--gold-light); margin-bottom: 14px;
+  }
+  .service ul { list-style: none; }
+  .service li {
+    position: relative; padding: 7px 0 7px 22px;
+    color: var(--ink); font-weight: 300; line-height: 1.5;
+    border-bottom: 1px solid rgba(201, 165, 76, 0.08);
+  }
+  .service li:last-child { border-bottom: none; }
+  .service li::before {
+    content: ''; position: absolute; left: 2px; top: 15px;
+    width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg);
+  }
+  .service-note {
+    margin-top: 14px; color: var(--muted); font-size: 0.85rem;
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem;
+  }
+
+  /* ---------- Done ---------- */
+  .done-card { text-align: center; }
+  .done-card h2 { margin-bottom: 14px; }
+  .done-card p { color: var(--ink); line-height: 1.7; margin-bottom: 26px; font-weight: 300; }
+  .done-icon {
+    width: 60px; height: 60px; margin: 0 auto 16px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 1.6rem;
+    background: var(--gold-gradient); color: var(--black);
+  }
+  .done-card .btn-gold { min-width: 200px; }
+  .home h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight: 500;
+    font-size: 1.9rem;
+    color: var(--gold-light);
+    margin-bottom: 28px;
+  }
+  .home .sub { color: var(--muted); margin-bottom: 36px; line-height: 1.6; }
+
+  .btn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .btn {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 30px 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+  .btn::after {
+    content: ''; position: absolute; inset: 6px;
+    border: 1px solid rgba(201, 165, 76, 0.18);
+    border-radius: 2px; pointer-events: none;
+    transition: border-color 0.25s ease;
+  }
+  .btn:hover {
+    border-color: var(--gold);
+    box-shadow: 0 8px 28px rgba(201, 165, 76, 0.15);
+    transform: translateY(-2px);
+  }
+  .btn:hover::after { border-color: rgba(201, 165, 76, 0.5); }
+  .btn span {
+    display: block; margin-top: 8px;
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 300;
+    color: var(--muted); letter-spacing: 0.5px;
+  }
+
+    .empty-note {
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 36px 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* ---------- Social ---------- */
+  .social { margin-top: 48px; }
+  .social p {
+    color: var(--muted); font-size: 0.75rem; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .social-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .social-links a {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 11px 20px;
+    border: 1px solid var(--gold-dark);
+    border-radius: 999px;
+    color: var(--gold-light);
+    text-decoration: none;
+    font-weight: 400; font-size: 0.95rem;
+    transition: all 0.25s ease;
+  }
+  .social-links a:hover {
+    background: var(--gold-gradient);
+    border-color: var(--gold);
+    color: var(--black);
+  }
+  .social-links a:hover small { color: rgba(10, 10, 10, 0.7); }
+  .social-links small { color: var(--muted); font-weight: 300; }
+
+  footer {
+    text-align: center;
+    padding: 22px 16px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body data-view="home">
+
+<!-- Splash: shown once when the site is first opened in a visit -->
+<div class="splash" id="splash" aria-hidden="true">
+  <img src="tlc_image.jpg" alt="" id="splash-img">
+</div>
+<script>
+  (function () {
+    var splash = document.getElementById('splash');
+    var img = document.getElementById('splash-img');
+    var seen = false;
+    try { seen = sessionStorage.getItem('tlcSplashSeen') === '1'; } catch (e) {}
+    if (seen) { splash.remove(); return; }
+    try { sessionStorage.setItem('tlcSplashSeen', '1'); } catch (e) {}
+
+    document.documentElement.classList.add('splash-on');
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hold = reduced ? 600 : 1800;     // how long the image stays before fading away
+    var done = false;
+
+    function finish() {
+      if (done) return;
+      done = true;
+      splash.classList.add('hide');
+      document.documentElement.classList.remove('splash-on');
+      setTimeout(function () { splash.remove(); }, 900);
+    }
+    function start() {
+      splash.classList.add('show');
+      setTimeout(finish, hold);
+    }
+
+    splash.addEventListener('click', finish);           // tap to skip
+    // Accept the image as tlc_image.jpg or tlc_image.jpeg; if neither exists, skip straight to the page
+    function failed() {
+      if (/\.jpg$/.test(img.getAttribute('src'))) img.src = 'tlc_image.jpeg';
+      else finish();
+    }
+    img.addEventListener('error', failed);
+    img.addEventListener('load', start);
+    if (img.complete) {                       // it may already have loaded (or failed) before this ran
+      if (img.naturalWidth) start(); else failed();
+    }
+    setTimeout(finish, 4000);                            // never keep anyone waiting
+  })();
+</script>
+
+<!-- Temporary development notice (home page only) -->
+<div class="dev-banner" id="dev-banner" role="note">
+  <span class="sr-only">This application is currently in development. Do not use unless instructed.</span>
+  <div class="dev-track" aria-hidden="true">
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+    <span>⚠ This application is currently in development. Do not use unless instructed.</span>
+  </div>
+</div>
+
+<header>
+  <h1>
+    <span class="title-script gold-text">Toni-Louise</span>
+    <span class="title-caps gold-text">Clinic and Academy</span>
+  </h1>
+  <div class="divider"><span></span></div>
+  <p>Aesthetics &middot; Skin &middot; Training &middot; Care</p>
+</header>
+
+<main>
+  <section class="home view active" id="view-home">
+    <h2>Welcome</h2>
+
+    <div class="btn-grid" id="home-buttons">
+      <button class="btn" type="button" onclick="showView('account')">
+        My Account
+        <span>Create a new account or view existing account membership</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin')">
+        Clinic Team Management
+        <span>Staff sign in</span>
+      </button>
+      <button class="btn" type="button" onclick="openGuide('members')">
+        How It Works
+        <span>A quick guide to using the app</span>
+      </button>
+    </div>
+
+    <div class="social">
+      <p>Follow us</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/tonilouise_clinicandacademy/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+          Instagram <small>@tonilouise_clinicandacademy</small>
+        </a>
+        <a href="https://www.facebook.com/TonilouiseClinicandAcademy/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- My Account -->
+  <section class="home view" id="view-account">
+    <button class="back" type="button" onclick="showView('home')">&larr; Back to Home</button>
+    <h2>My Account</h2>
+
+    <div class="btn-grid">
+      <button class="btn" type="button" onclick="showView('login')">
+        Log In To Your Membership Account
+        <span>Already a member? Sign in here</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('join')">
+        Create New Membership Account
+        <span>New to the clinic? Join here</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Create New Membership Account -->
+  <section class="home view" id="view-join">
+    <h2>Create New Membership Account</h2>
+
+    <form class="panel-form" id="join-form" novalidate onsubmit="event.preventDefault(); createAccount();">
+      <div class="row-2">
+        <div>
+          <label for="cm-first">First Name</label>
+          <input class="field" type="text" id="cm-first" autocomplete="given-name">
+        </div>
+        <div>
+          <label for="cm-last">Last Name</label>
+          <input class="field" type="text" id="cm-last" autocomplete="family-name">
+        </div>
+      </div>
+
+      <label for="cm-month-btn">Birthday Month</label>
+      <div class="month-picker">
+        <button type="button" class="field month-btn" id="cm-month-btn" aria-haspopup="true" aria-expanded="false">
+          <span id="cm-month-label"></span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </button>
+        <div class="month-pop" id="cm-month-pop" role="listbox" aria-label="Birthday month" hidden></div>
+      </div>
+
+      <label for="cm-phone">Phone Number</label>
+      <input class="field" type="tel" id="cm-phone" inputmode="numeric" autocomplete="tel" placeholder="07xxxxxxxxx" maxlength="13">
+      <p class="hint">11 digits starting with 07</p>
+
+      <label for="cm-word">Memorable Word</label>
+      <input class="field" type="text" id="cm-word" autocomplete="off">
+
+      <p class="form-msg" id="cm-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold">Create Account</button>
+        <button type="button" class="btn-outline" onclick="abortAccount()">Abort</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Log In To Your Membership Account -->
+  <section class="home view" id="view-login">
+    <button class="back" type="button" onclick="showView('account')">&larr; Back to My Account</button>
+    <h2>Log In To Your Membership Account</h2>
+
+    <form class="panel-form" id="login-form" novalidate onsubmit="event.preventDefault(); memberLogin();">
+      <label for="li-name">Full Name</label>
+      <input class="field" type="text" id="li-name" autocomplete="name" placeholder="First and last name">
+
+      <label for="li-month-btn">Birthday Month</label>
+      <div class="month-picker">
+        <button type="button" class="field month-btn" id="li-month-btn" aria-haspopup="true" aria-expanded="false">
+          <span id="li-month-label"></span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </button>
+        <div class="month-pop" id="li-month-pop" role="listbox" aria-label="Birthday month" hidden></div>
+      </div>
+
+      <label for="li-word">Memorable Word</label>
+      <input class="field" type="password" id="li-word" autocomplete="current-password">
+
+      <p class="form-msg" id="li-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold" id="li-btn">Log In</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Member account page -->
+  <section class="home view" id="view-member">
+    <h2>My Account Summary</h2>
+
+    <div class="panel-form account-card">
+      <div class="account-row">
+        <span class="account-label">Full Name</span>
+        <span class="account-value" id="ma-name"></span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Membership Status</span>
+        <span class="status-badge" id="ma-status"></span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Account Opened Date</span>
+        <span class="account-value" id="ma-created"></span>
+      </div>
+      <div class="account-row" id="ma-renewal-row" hidden>
+        <span class="account-label">Renewal Date</span>
+        <span class="account-value" id="ma-renewal"></span>
+      </div>
+      <div class="account-row">
+        <label class="account-label" for="ma-code">Your Booking Code</label>
+        <div class="code-wrap">
+          <input class="code-box" id="ma-code" type="text" readonly tabindex="-1" aria-readonly="true">
+          <button type="button" class="copy-btn" id="ma-copy" hidden onclick="copyBookingCode()" aria-label="Copy booking code">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+            <span id="ma-copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
+      <div class="account-row clubs-row" id="ma-clubs-row" hidden>
+        <span class="account-label">Your Clubs</span>
+        <ul class="club-list" id="ma-clubs"></ul>
+      </div>
+      <div class="account-row history-row" id="ma-history-row" hidden>
+        <span class="account-label">Redemption History</span>
+        <ul class="history-list" id="ma-history"></ul>
+      </div>
+    </div>
+
+    <div class="form-actions account-actions">
+      <button type="button" class="btn-outline" onclick="memberLogout()">Log Out</button>
+    </div>
+  </section>
+
+  <!-- Administrator login -->
+  <section class="home view" id="view-admin-login">
+    <button class="back" type="button" onclick="showView('home')">&larr; Back to Home</button>
+    <h2>Clinic Team Management</h2>
+
+    <form class="panel-form" id="admin-form" novalidate onsubmit="event.preventDefault(); adminLogin();">
+      <label for="ad-email">Email</label>
+      <input class="field" type="email" id="ad-email" autocomplete="username">
+
+      <label for="ad-password">Password</label>
+      <input class="field" type="password" id="ad-password" autocomplete="current-password">
+
+      <p class="form-msg" id="ad-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold" id="ad-btn">Sign In</button>
+      </div>
+      <button type="button" class="text-link" onclick="adminResetPassword()">Forgotten your password?</button>
+    </form>
+  </section>
+
+  <!-- Administrator area (signed-in admins only) -->
+  <section class="home view" id="view-admin">
+    <button class="back" type="button" onclick="showView('home')">&larr; Back to Home</button>
+    <p class="admin-bar">Signed in as <strong id="ad-user"></strong></p>
+    <h2>Clinic Team Management</h2>
+
+    <h3 class="admin-group">Membership Management</h3>
+    <div class="btn-grid">
+      <button class="btn" type="button" onclick="showView('admin-update')">
+        Activate Membership Account
+        <span>Change a member's status or booking code</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin-delete')">
+        Delete Membership Account
+        <span>Permanently remove a member</span>
+      </button>
+    </div>
+
+    <h3 class="admin-group">Club Management</h3>
+    <div class="btn-grid">
+      <button class="btn" type="button" onclick="showView('admin-club')">
+        Add Club to Membership
+        <span>Give an active member a club and sessions</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin-redeem')">
+        Update Club Membership
+        <span>Record redeemed sessions</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin-gratuity')">
+        Gratuity Sessions
+        <span>Gift complimentary sessions to a member</span>
+      </button>
+    </div>
+
+    <h3 class="admin-group">Misc Tools</h3>
+    <div class="btn-grid">
+      <button class="btn" type="button" onclick="showView('admin-insights')">
+        Portfolio Insights
+        <span>Accounts and clubs at a glance</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin-expired')">
+        Expired Renewals
+        <span>Members whose club renewal date has passed</span>
+      </button>
+      <button class="btn" type="button" onclick="showView('admin-birthdays')">
+        Birthday Sessions
+        <span>Upcoming birthdays and birthday sessions</span>
+      </button>
+      <button class="btn" type="button" onclick="openGuide('team')">
+        Team Guide
+        <span>How each admin tool works</span>
+      </button>
+    </div>
+
+    <div class="form-actions account-actions">
+      <button type="button" class="btn-outline" onclick="adminLogout()">Sign Out</button>
+    </div>
+  </section>
+
+  <!-- How It Works guide -->
+  <section class="home view" id="view-guide">
+    <button class="back" type="button" id="guide-back" onclick="showView('home')">&larr; Back to Home</button>
+    <h2>How It Works</h2>
+    <p class="guide-intro">Tap a topic to open it.</p>
+
+    <div class="guide-tabs" role="tablist" id="guide-tabs">
+      <button type="button" role="tab" class="guide-tab" data-tab="members" aria-selected="true">For Members</button>
+      <button type="button" role="tab" class="guide-tab" data-tab="team" aria-selected="false">For the Clinic Team</button>
+    </div>
+
+    <div class="guide-list" id="guide-list"></div>
+  </section>
+
+  <!-- Gratuity Sessions (admin only) -->
+  <section class="home view" id="view-admin-gratuity">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Gratuity Sessions</h2>
+
+    <div class="panel-form">
+      <label for="gr-select">Active Member Full Name</label>
+      <select class="field" id="gr-select"><option value="">Loading members…</option></select>
+      <p class="form-msg" id="gr-list-msg" role="alert"></p>
+    </div>
+
+    <form class="panel-form" id="gr-form" novalidate hidden onsubmit="event.preventDefault(); submitGratuity();">
+      <h3 class="up-title" id="gr-member-name"></h3>
+      <p class="gr-current" id="gr-current"></p>
+
+      <label for="gr-count">Number of Gratuity Sessions to Gift</label>
+      <div class="stepper">
+        <button type="button" class="step-btn" data-step="-1" aria-label="One fewer">&minus;</button>
+        <input class="field" type="number" id="gr-count" min="1" max="50" step="1" inputmode="numeric" value="1">
+        <button type="button" class="step-btn" data-step="1" aria-label="One more">+</button>
+      </div>
+      <p class="hint">Between 1 and 50. These are added to any gratuity sessions the member already has.</p>
+
+      <p class="form-msg" id="gr-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold">Gift Sessions</button>
+        <button type="button" class="btn-outline" onclick="cancelGratuity()">Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Birthday Sessions (admin only) -->
+  <section class="home view" id="view-admin-birthdays">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Birthday Sessions</h2>
+    <p class="insights-status" id="bd-status" role="status"></p>
+
+    <div class="bd-summary" id="bd-summary" hidden></div>
+
+    <label class="bulk-all bd-filter" id="bd-filter-wrap" hidden>
+      <input type="checkbox" id="bd-only"> <span>Only show members with a birthday session</span>
+    </label>
+
+    <div id="bd-list"></div>
+
+    <div class="form-actions account-actions">
+      <button type="button" class="btn-outline" onclick="loadBirthdays()">Refresh</button>
+    </div>
+  </section>
+
+  <!-- Expired Renewals (admin only) -->
+  <section class="home view" id="view-admin-expired">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Expired Renewals</h2>
+    <p class="insights-status" id="ex-status" role="status"></p>
+
+    <div class="bulk-bar" id="ex-bulk" hidden>
+      <label class="bulk-all"><input type="checkbox" id="ex-select-all"> <span id="ex-select-label">Select all</span></label>
+      <div class="bulk-actions">
+        <button type="button" class="bulk-act" data-bulk="reset" disabled>Clear &amp; Set to Pending</button>
+        <button type="button" class="bulk-act danger" data-bulk="delete" disabled>Delete Members</button>
+      </div>
+    </div>
+    <p class="form-msg" id="ex-msg" role="alert"></p>
+
+    <ul class="expired-list" id="ex-list"></ul>
+
+    <div class="form-actions account-actions">
+      <button type="button" class="btn-outline" onclick="loadExpired()">Refresh</button>
+    </div>
+  </section>
+
+  <!-- Portfolio Insights (admin only) -->
+  <section class="home view" id="view-admin-insights">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Portfolio Insights</h2>
+    <p class="insights-status" id="pi-status" role="status"></p>
+
+    <h3 class="insights-heading">Accounts</h3>
+    <div class="kpi-grid kpi-grid-3">
+      <div class="kpi">
+        <span class="kpi-label">Total Client Accounts In Portfolio</span>
+        <span class="kpi-value" id="pi-total">–</span>
+        <span class="kpi-sub" id="pi-total-sub"></span>
+      </div>
+      <div class="kpi kpi-active">
+        <span class="kpi-label">Total Active Status Accounts In Portfolio</span>
+        <span class="kpi-value" id="pi-active">–</span>
+        <span class="kpi-sub" id="pi-active-sub"></span>
+      </div>
+      <div class="kpi kpi-expired kpi-link" role="button" tabindex="0" onclick="showView('admin-expired')"
+           onkeydown="if(event.key==='Enter')showView('admin-expired')">
+        <span class="kpi-label">Expired Renewals</span>
+        <span class="kpi-value" id="pi-expired">–</span>
+        <span class="kpi-sub" id="pi-expired-sub"></span>
+      </div>
+    </div>
+
+    <h3 class="insights-heading">Clubs</h3>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <span class="kpi-label">Total Skin Clubs</span>
+        <span class="kpi-value" id="pi-skin">–</span>
+        <span class="kpi-sub">&nbsp;</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Total Tox Clubs</span>
+        <span class="kpi-value" id="pi-tox">–</span>
+        <span class="kpi-sub">&nbsp;</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Total Exclusive Clubs</span>
+        <span class="kpi-value" id="pi-exclusive">–</span>
+        <span class="kpi-sub">&nbsp;</span>
+      </div>
+      <div class="kpi kpi-redeemed">
+        <span class="kpi-label">Sessions Redeemed</span>
+        <span class="kpi-value" id="pi-redeemed">–</span>
+        <span class="kpi-sub" id="pi-redeemed-sub"></span>
+      </div>
+    </div>
+
+    <div class="form-actions account-actions">
+      <button type="button" class="btn-outline" onclick="loadInsights()">Refresh</button>
+    </div>
+  </section>
+
+  <!-- Update Membership Account (admin only) -->
+  <section class="home view" id="view-admin-update">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Update Membership Account</h2>
+
+    <div class="panel-form">
+      <label for="up-select">Member Full Name</label>
+      <select class="field" id="up-select"><option value="">Loading members…</option></select>
+      <p class="form-msg" id="up-list-msg" role="alert"></p>
+    </div>
+
+    <form class="panel-form up-form" id="up-form" novalidate hidden onsubmit="event.preventDefault(); saveMemberUpdate();">
+      <h3 class="up-title">Account Summary</h3>
+
+      <div class="row-2">
+        <div>
+          <label for="up-first">First Name</label>
+          <input class="field" type="text" id="up-first" readonly tabindex="-1">
+        </div>
+        <div>
+          <label for="up-last">Last Name</label>
+          <input class="field" type="text" id="up-last" readonly tabindex="-1">
+        </div>
+      </div>
+
+      <label id="up-status-label">Membership Status</label>
+      <div class="toggle-group" id="up-status" role="radiogroup" aria-labelledby="up-status-label">
+        <button type="button" class="toggle pending" data-value="Pending">Pending</button>
+        <button type="button" class="toggle active" data-value="Active">Active</button>
+      </div>
+
+      <label for="up-created">Account Opened Date</label>
+      <input class="field" type="text" id="up-created" readonly tabindex="-1">
+
+      <label for="up-code">Booking Code</label>
+      <input class="field" type="text" id="up-code" autocomplete="off" placeholder="Blank until Active">
+
+      <p class="up-info" id="up-info"></p>
+      <p class="form-msg" id="up-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold">Save Changes</button>
+        <button type="button" class="btn-outline" onclick="cancelMemberUpdate()">Cancel</button>
+      </div>
+
+      <!-- WhatsApp message (shown on phones and tablets only) -->
+      <div class="wa-wrap" id="up-wa-wrap" hidden>
+        <a class="btn-whatsapp" id="up-wa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3Z"/></svg>
+          <span>Send WhatsApp Message</span>
+        </a>
+        <p class="hint" id="up-wa-hint"></p>
+      </div>
+    </form>
+  </section>
+
+  <!-- Update Club Membership (admin only) -->
+  <section class="home view" id="view-admin-redeem">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Update Club Membership</h2>
+
+    <div class="panel-form">
+      <label for="rd-select">Club Member</label>
+      <select class="field" id="rd-select"><option value="">Loading members…</option></select>
+      <p class="form-msg" id="rd-list-msg" role="alert"></p>
+    </div>
+
+    <div class="panel-form" id="rd-panel" hidden>
+      <h3 class="up-title" id="rd-member-name"></h3>
+
+      <div id="rd-club-wrap">
+        <label id="rd-club-label">Club</label>
+        <div class="toggle-group club-toggles" id="rd-club" role="radiogroup" aria-labelledby="rd-club-label"></div>
+      </div>
+
+      <label for="rd-date">Redeemed Date</label>
+      <input class="field" type="date" id="rd-date">
+
+      <label>Sessions</label>
+      <ul class="redeem-list" id="rd-sessions"></ul>
+
+      <p class="form-msg" id="rd-msg" role="alert"></p>
+
+      <label>Redemption History</label>
+      <ul class="history-list" id="rd-history"></ul>
+    </div>
+  </section>
+
+  <!-- Add Club to Membership (admin only) -->
+  <section class="home view" id="view-admin-club">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Add Club to Membership</h2>
+
+    <div class="panel-form">
+      <label for="cl-select">Active Member</label>
+      <select class="field" id="cl-select"><option value="">Loading members…</option></select>
+      <p class="form-msg" id="cl-list-msg" role="alert"></p>
+    </div>
+
+    <form class="panel-form" id="cl-form" novalidate hidden onsubmit="event.preventDefault(); submitClub();">
+      <h3 class="up-title" id="cl-member-name"></h3>
+
+      <label>Current Clubs</label>
+      <ul class="club-list club-list-left" id="cl-current"></ul>
+
+      <label id="cl-club-label">Club</label>
+      <div class="toggle-group club-toggles" id="cl-club" role="radiogroup" aria-labelledby="cl-club-label">
+        <button type="button" class="toggle" data-value="Skin Club">Skin Club</button>
+        <button type="button" class="toggle" data-value="Tox Club">Tox Club</button>
+        <button type="button" class="toggle" data-value="Bro Tox Club">Bro Tox Club</button>
+        <button type="button" class="toggle" data-value="Exclusive Club">Exclusive Club</button>
+      </div>
+
+      <div class="club-details" id="cl-details" hidden aria-live="polite"></div>
+
+      <div class="switch-field">
+        <span class="switch-text" id="cl-bday-label">Include Birthday Session</span>
+        <label class="switch">
+          <input type="checkbox" id="cl-bday" role="switch" aria-labelledby="cl-bday-label">
+          <span class="slider"></span>
+        </label>
+        <span class="switch-state" id="cl-bday-state">No</span>
+      </div>
+
+      <label for="cl-renewal">Renewal Date</label>
+      <input class="field" type="date" id="cl-renewal">
+      <p class="hint">Defaults to the 1st of this month, 12 months from today.</p>
+
+      <p class="form-msg" id="cl-msg" role="alert"></p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-gold">Submit</button>
+        <button type="button" class="btn-outline" onclick="cancelClub()">Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Delete Membership Account (admin only) -->
+  <section class="home view" id="view-admin-delete">
+    <button class="back" type="button" onclick="showView('admin')">&larr; Back to Clinic Team Management</button>
+    <h2>Delete Membership Account</h2>
+
+    <div class="panel-form">
+      <label for="del-select">Member Full Name</label>
+      <select class="field" id="del-select"><option value="">Loading members…</option></select>
+      <p class="form-msg" id="del-list-msg" role="alert"></p>
+    </div>
+
+    <div class="panel-form" id="del-summary" hidden>
+      <h3 class="up-title">Account Summary</h3>
+      <div class="account-row"><span class="account-label">Full Name</span><span class="account-value" id="del-name"></span></div>
+      <div class="account-row"><span class="account-label">Membership Status</span><span class="status-badge" id="del-status"></span></div>
+      <div class="account-row"><span class="account-label">Account Opened Date</span><span class="account-value" id="del-created"></span></div>
+      <div class="account-row"><span class="account-label">Booking Code</span><span class="account-value" id="del-code"></span></div>
+      <div class="account-row"><span class="account-label">Phone Number</span><span class="account-value" id="del-phone"></span></div>
+      <div class="account-row"><span class="account-label">Birthday Month</span><span class="account-value" id="del-month"></span></div>
+
+      <p class="danger-note">Deleting this account removes all records for this member. They will need to register again to create a new account.</p>
+
+      <div class="form-actions">
+        <button type="button" class="btn-danger" id="del-btn" onclick="deleteMemberAccount()">Delete Account</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Services -->
+  <section class="home view" id="view-services">
+    <button class="back" type="button" onclick="showView('home')">&larr; Back to Home</button>
+    <h2>Services &amp; Treatments</h2>
+
+    <div class="service-list">
+      <article class="service">
+        <h3>Aesthetics</h3>
+        <ul>
+          <li>Lip fillers, including Russian lip and natural styles</li>
+          <li>Facial and skin fillers</li>
+          <li>Ombré Lip Blush</li>
+        </ul>
+      </article>
+      <article class="service">
+        <h3>Skin &amp; Packages</h3>
+        <ul>
+          <li>The Pay Monthly Skin Club Package</li>
+          <li>Microneedling</li>
+          <li>Luxury dermaplaning</li>
+          <li>Bio re-peels</li>
+        </ul>
+      </article>
+      <article class="service">
+        <h3>Lashes</h3>
+        <ul>
+          <li>Classic, hybrid and Russian lash sets</li>
+        </ul>
+        <p class="service-note">Lash treatments provided in-clinic</p>
+      </article>
+      <article class="service">
+        <h3>Training &amp; Academy</h3>
+        <ul>
+          <li>Weekly student training</li>
+          <li>Masterclasses</li>
+          <li>Hands-on skincare days</li>
+          <li>Practitioner mentorship</li>
+        </ul>
+        <p class="service-note">Led by Toni Louise</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Account created -->
+  <section class="home view" id="view-join-done">
+    <div class="panel-form done-card">
+      <div class="done-icon">&#10003;</div>
+      <h2>Account Created</h2>
+      <p id="cm-done-msg">We have successfully created your membership account. Please proceed to setup payments and when received, you can check your account to confirm your membership status is Active, and also check your booking code</p>
+      <button type="button" class="btn-gold" onclick="showView('home')">Return Home</button>
+    </div>
+  </section>
+</main>
+
+<!-- Pop-up used for "Are You Sure?" and the summary -->
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 id="modal-title"></h3>
+    <div id="modal-body"></div>
+    <p class="form-msg" id="modal-msg" role="alert"></p>
+    <div class="form-actions">
+      <button type="button" class="btn-gold" id="modal-yes">Yes</button>
+      <button type="button" class="btn-outline" id="modal-no">No</button>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; <span id="year"></span> Toni-Louise Clinic and Academy</footer>
+
+<script>
+  // Pages only a signed-in administrator can see
+  const ADMIN_VIEWS = ['admin', 'admin-update', 'admin-delete', 'admin-club', 'admin-redeem', 'admin-insights', 'admin-expired', 'admin-birthdays', 'admin-gratuity'];
+  window.adminUser = null;
+
+  function showView(name) {
+    if (ADMIN_VIEWS.includes(name) && !window.adminUser) name = 'admin-login';
+    if (name === 'admin-login' && window.resetAdminForm) window.resetAdminForm();
+    document.body.dataset.view = name;   // the development banner only shows on the home page
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    if (name === 'join' && window.resetJoinForm) window.resetJoinForm();
+    if (name === 'login' && window.resetLoginForm) window.resetLoginForm();
+    if (name === 'admin-update' && window.loadMemberList) window.loadMemberList();
+    if (name === 'admin-delete' && window.loadDeleteList) window.loadDeleteList();
+    if (name === 'admin-club' && window.loadClubList) window.loadClubList();
+    if (name === 'admin-redeem' && window.loadRedeemList) window.loadRedeemList();
+    if (name === 'admin-insights' && window.loadInsights) window.loadInsights();
+    if (name === 'admin-expired' && window.loadExpired) window.loadExpired();
+    if (name === 'admin-birthdays' && window.loadBirthdays) window.loadBirthdays();
+    if (name === 'admin-gratuity' && window.loadGratuityList) window.loadGratuityList();
+    if (name !== 'member' && window.clearMemberPage) window.clearMemberPage();
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, doc, getDoc, getDocs, collection, writeBatch, updateDoc, serverTimestamp, FieldPath, arrayUnion, deleteField, increment
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDChhzW9NKdvJlgDBOVn-KsY3Io9tr41Mw",
+    authDomain: "toni-louise-clinic-and-academy.firebaseapp.com",
+    projectId: "toni-louise-clinic-and-academy",
+    storageBucket: "toni-louise-clinic-and-academy.firebasestorage.app",
+    messagingSenderId: "162205983081",
+    appId: "1:162205983081:web:bd05f9f07fb832cea09df8"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Administrator Access ----------
+  const adMsg = (text, ok = false) => { $('ad-msg').textContent = text; $('ad-msg').classList.toggle('ok', ok); };
+  const authError = (code) => ({
+    'auth/invalid-credential': 'Incorrect email or password. Please try again.',
+    'auth/wrong-password': 'Incorrect email or password. Please try again.',
+    'auth/user-not-found': 'Incorrect email or password. Please try again.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/user-disabled': 'This account has been disabled.',
+    'auth/too-many-requests': 'Too many attempts. Please wait a few minutes and try again.',
+    'auth/network-request-failed': 'Network error. Please check your connection.',
+    'auth/operation-not-allowed': 'Email and password sign-in is not switched on in Firebase yet.'
+  }[code] || 'Sign in failed. Please try again.');
+
+  window.resetAdminForm = () => {
+    $('admin-form').reset();
+    adMsg('');
+    ['ad-email', 'ad-password'].forEach(id => $(id).classList.remove('invalid'));
+  };
+
+  window.adminLogin = async () => {
+    const email = $('ad-email').value.trim();
+    const password = $('ad-password').value;
+    ['ad-email', 'ad-password'].forEach(id => $(id).classList.remove('invalid'));
+    adMsg('');
+    if (!email || !password) {
+      if (!email) $('ad-email').classList.add('invalid');
+      if (!password) $('ad-password').classList.add('invalid');
+      adMsg('Please enter your email and password.');
+      return;
+    }
+    const btn = $('ad-btn');
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged below opens the admin page
+    } catch (err) {
+      console.error(err);
+      $('ad-password').value = '';
+      adMsg(authError(err.code));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  };
+
+  window.adminResetPassword = async () => {
+    const email = $('ad-email').value.trim();
+    if (!email) { $('ad-email').classList.add('invalid'); adMsg('Enter your email above first, then click the link again.'); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      adMsg('If that email is registered, a password reset link has been sent.', true);
+    } catch (err) {
+      console.error(err);
+      adMsg(authError(err.code));
+    }
+  };
+
+  window.adminLogout = async () => {
+    await signOut(auth);
+    showView('home');
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    window.adminUser = user;
+    $('ad-user').textContent = user ? user.email : '';
+    const onPage = (id) => $('view-' + id).classList.contains('active');
+    if (user && onPage('admin-login')) showView('admin');
+    if (!user && onPage('admin')) showView('home');
+  });
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const currentMonthName = () => MONTHS[new Date().getMonth()];
+  const escapeHTML = (s) => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  const tidy = (s) => s.trim().replace(/\s+/g, ' ');
+
+  // ---------- Member key ----------
+  // Each member record is filed under a scrambled code made from their
+  // full name, birthday month and memorable word. Only someone who knows
+  // all three can find the record, so nobody can browse other members.
+  async function memberKey(fullName, month, word) {
+    // Name and memorable word are not case sensitive
+    const text = `tlc-member-v1|${tidy(fullName).toLowerCase()}|${month}|${word.trim().toLowerCase()}`;
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // ---------- Pop-up ----------
+  let modalResolve = null;
+  function openModal(title, bodyHTML, yesLabel = 'Yes', noLabel = 'No') {
+    $('modal-title').textContent = title;
+    $('modal-body').innerHTML = bodyHTML;
+    $('modal-msg').textContent = '';
+    $('modal-yes').textContent = yesLabel;
+    $('modal-no').textContent = noLabel;
+    $('modal-no').hidden = false;
+    $('modal').querySelector('.modal').classList.remove('info');
+    $('modal-yes').disabled = false;
+    $('modal').hidden = false;
+    $('modal-no').focus();
+  }
+  // Help pop-up: one "Got it" button
+  function showInfo(title, bodyHTML) {
+    openModal(title, bodyHTML, 'Got it');
+    $('modal-no').hidden = true;
+    $('modal').querySelector('.modal').classList.add('info');
+    $('modal-yes').onclick = () => closeModal(true);
+    $('modal-yes').focus();
+  }
+  function askConfirm(title, bodyHTML, yesLabel, noLabel) {
+    openModal(title, bodyHTML, yesLabel, noLabel);
+    $('modal-yes').onclick = () => closeModal(true);
+    return new Promise(resolve => { modalResolve = resolve; });
+  }
+  function closeModal(result) {
+    $('modal').hidden = true;
+    $('modal').querySelector('.modal').classList.remove('danger', 'info');
+    $('modal-no').hidden = false;
+    $('modal-yes').className = 'btn-gold';
+    $('modal-yes').onclick = null;
+    if (modalResolve) { modalResolve(result); modalResolve = null; }
+  }
+  $('modal-no').addEventListener('click', () => closeModal(false));
+  $('modal').addEventListener('click', (e) => { if (e.target === $('modal') && !$('modal-yes').disabled) closeModal(false); });
+
+  // ---------- Month pickers ----------
+  function makeMonthPicker(prefix) {
+    const btn = $(`${prefix}-month-btn`);
+    const pop = $(`${prefix}-month-pop`);
+    const label = $(`${prefix}-month-label`);
+    const picker = { value: currentMonthName() };
+
+    picker.render = () => {
+      label.textContent = picker.value;
+      pop.innerHTML = MONTHS.map(m =>
+        `<button type="button" role="option" aria-selected="${m === picker.value}" class="${m === picker.value ? 'selected' : ''}" data-month="${m}">${m.slice(0, 3)}</button>`
+      ).join('');
+    };
+    picker.toggle = (open) => {
+      pop.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    picker.isOpen = () => !pop.hidden;
+    picker.reset = () => { picker.value = currentMonthName(); picker.render(); picker.toggle(false); };
+
+    btn.addEventListener('click', () => picker.toggle(pop.hidden));
+    pop.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-month]');
+      if (!b) return;
+      picker.value = b.dataset.month;
+      picker.render();
+      picker.toggle(false);
+      btn.focus();
+    });
+    picker.render();
+    return picker;
+  }
+  const joinMonth = makeMonthPicker('cm');
+  const loginMonth = makeMonthPicker('li');
+  const pickers = [joinMonth, loginMonth];
+
+  document.addEventListener('click', (e) => {
+    pickers.forEach(p => {
+      const wrap = $(`${p === joinMonth ? 'cm' : 'li'}-month-btn`).closest('.month-picker');
+      if (!wrap.contains(e.target)) p.toggle(false);
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = pickers.find(p => p.isOpen());
+    if (open) open.toggle(false);
+    else if (!$('modal').hidden && !$('modal-yes').disabled) closeModal(false);
+  });
+
+  // ---------- Create New Membership Account ----------
+  const joinFields = ['cm-first', 'cm-last', 'cm-phone', 'cm-word'];
+  joinFields.forEach(id => $(id).addEventListener('input', () => $(id).classList.remove('invalid')));
+  const cleanPhone = (v) => v.replace(/[\s-]/g, '');
+
+  window.resetJoinForm = () => {
+    $('join-form').reset();
+    joinFields.forEach(id => $(id).classList.remove('invalid'));
+    $('cm-msg').textContent = '';
+    joinMonth.reset();
+  };
+
+  window.abortAccount = async () => {
+    const yes = await askConfirm('Are You Sure?', '<p>Your details will not be saved and you will return to the home page.</p>');
+    if (yes) {
+      window.resetJoinForm();
+      showView('home');
+    }
+  };
+
+  window.createAccount = async () => {
+    const msg = $('cm-msg');
+    msg.textContent = '';
+    joinFields.forEach(id => $(id).classList.remove('invalid'));
+
+    const firstName = tidy($('cm-first').value);
+    const lastName = tidy($('cm-last').value);
+    const phoneNumber = cleanPhone($('cm-phone').value);
+    const memorableWord = $('cm-word').value.trim();
+    const birthdayMonth = joinMonth.value;
+
+    const problems = [];
+    if (!firstName) { problems.push('First Name'); $('cm-first').classList.add('invalid'); }
+    if (!lastName) { problems.push('Last Name'); $('cm-last').classList.add('invalid'); }
+    if (!/^07\d{9}$/.test(phoneNumber)) { problems.push('a valid Phone Number (11 digits starting 07)'); $('cm-phone').classList.add('invalid'); }
+    if (!memorableWord) { problems.push('Memorable Word'); $('cm-word').classList.add('invalid'); }
+    if (problems.length) {
+      msg.textContent = 'Please enter ' + problems.join(', ') + '.';
+      return;
+    }
+
+    openModal('Confirm Your Details', `
+      <p>Please check your details are correct.</p>
+      <dl>
+        <dt>First Name</dt><dd>${escapeHTML(firstName)}</dd>
+        <dt>Last Name</dt><dd>${escapeHTML(lastName)}</dd>
+        <dt>Birthday Month</dt><dd>${birthdayMonth}</dd>
+        <dt>Phone Number</dt><dd>${phoneNumber}</dd>
+        <dt>Memorable Word</dt><dd>${escapeHTML(memorableWord)}</dd>
+      </dl>
+      <p>Would you like to create your account?</p>`);
+
+    // The pop-up stays open while saving, so any error can be shown in it
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Creating…';
+      $('modal-msg').textContent = '';
+      try {
+        const memberId = await memberKey(`${firstName} ${lastName}`, birthdayMonth, memorableWord);
+        const batch = writeBatch(db);
+        batch.set(doc(db, 'members', memberId), {
+          firstName,
+          lastName,
+          birthdayMonth,
+          phoneNumber,
+          memorableWord,
+          membershipStatus: 'Pending',
+          bookingCode: '',
+          createdAt: serverTimestamp()
+        });
+        // One entry per phone number, so the same number can't sign up twice
+        batch.set(doc(db, 'memberPhones', phoneNumber), { memberId });
+        await batch.commit();
+
+        closeModal(true);
+        window.resetJoinForm();
+        showView('join-done');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes';
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'An account with these details or this phone number may already exist. Please contact the clinic if you need help.'
+          : 'Sorry, we could not create your account. Please check your connection and try again.';
+      }
+    };
+  };
+
+  // ---------- Log In To Your Membership Account ----------
+  const loginFields = ['li-name', 'li-word'];
+  loginFields.forEach(id => $(id).addEventListener('input', () => { $(id).classList.remove('invalid'); }));
+
+  window.resetLoginForm = () => {
+    $('login-form').reset();
+    loginFields.forEach(id => $(id).classList.remove('invalid'));
+    $('li-msg').textContent = '';
+    loginMonth.reset();
+  };
+
+  window.memberLogin = async () => {
+    const msg = $('li-msg');
+    const btn = $('li-btn');
+    msg.textContent = '';
+    loginFields.forEach(id => $(id).classList.remove('invalid'));
+
+    const fullName = tidy($('li-name').value);
+    const word = $('li-word').value.trim();
+    const problems = [];
+    if (!fullName) { problems.push('Full Name'); $('li-name').classList.add('invalid'); }
+    if (!word) { problems.push('Memorable Word'); $('li-word').classList.add('invalid'); }
+    if (problems.length) {
+      msg.textContent = 'Please enter your ' + problems.join(' and ') + '.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Checking…';
+    try {
+      const memberId = await memberKey(fullName, loginMonth.value, word);
+      const snap = await getDoc(doc(db, 'members', memberId));
+      if (!snap.exists()) {
+        msg.textContent = 'The details you entered are incorrect. Please try again.';
+        $('li-word').value = '';
+        $('li-word').focus();
+        return;
+      }
+      showMemberPage(snap.data());
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Sorry, we could not check your details. Please check your connection and try again.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Log In';
+    }
+  };
+
+  // ---------- Member account page ----------
+  // The logged-in member's record, kept ready for when the page gets content
+  let currentMember = null;
+
+  function showMemberPage(m) {
+    currentMember = m;
+    $('ma-name').textContent = `${m.firstName || ''} ${m.lastName || ''}`.trim();
+
+    const status = m.membershipStatus || 'Pending';
+    const badge = $('ma-status');
+    badge.textContent = status;
+    badge.className = 'status-badge ' + status.toLowerCase().replace(/\s+/g, '-');
+
+    const created = m.createdAt && typeof m.createdAt.toDate === 'function' ? m.createdAt.toDate() : null;
+    $('ma-created').textContent = created
+      ? created.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '—';
+
+    // Booking code: blank while Pending, shown read-only once Active
+    const codeBox = $('ma-code');
+    const code = (m.bookingCode || '').toString().trim();
+    codeBox.className = 'code-box';
+    $('ma-copy').hidden = !(status === 'Active' && code);
+    resetCopyButton();
+    if (status === 'Active' && code) {
+      codeBox.value = code;
+      codeBox.classList.add('has-code');
+    } else if (status === 'Active') {
+      codeBox.value = 'Being prepared';
+      codeBox.classList.add('awaiting');
+    } else {
+      codeBox.value = '';
+    }
+
+    // Clubs and sessions remaining (added by the clinic)
+    const clubsHTML = clubListHTML(m.clubs);
+    $('ma-clubs-row').hidden = !clubsHTML;
+    $('ma-clubs').innerHTML = clubsHTML;
+
+    // Renewal date(s) from their clubs: one date if they all match, otherwise one per club
+    const renewals = Object.keys(m.clubs || {})
+      .filter(c => m.clubs[c] && m.clubs[c].renewalDate)
+      .sort((a, b) => String(m.clubs[a].renewalDate).localeCompare(String(m.clubs[b].renewalDate)))
+      .map(c => ({ club: c, date: m.clubs[c].renewalDate }));
+    const sameDate = renewals.length && renewals.every(r => r.date === renewals[0].date);
+    $('ma-renewal-row').hidden = !renewals.length;
+    // Same style as Account Opened Date, e.g. "1 October 2027"
+    const longDate = (iso) => {
+      const [y, mo, d] = String(iso).split('-').map(Number);
+      return y ? new Date(y, mo - 1, d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : iso;
+    };
+    // Whole days from today to the renewal date, e.g. "(345 days left)"
+    const daysLeft = (iso) => {
+      const [y, mo, d] = String(iso).split('-').map(Number);
+      if (!y) return '';
+      const now = new Date();
+      const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+      const days = Math.round((Date.UTC(y, mo - 1, d) - today) / 86400000);
+      const text = days > 1 ? `${days} days left`
+        : days === 1 ? '1 day left'
+        : days === 0 ? 'renews today'
+        : `${-days} day${days === -1 ? '' : 's'} overdue`;
+      return ` <span class="days-left${days < 0 ? ' overdue' : days <= 30 ? ' soon' : ''}">(${text})</span>`;
+    };
+    $('ma-renewal').innerHTML = !renewals.length ? ''
+      : sameDate ? longDate(renewals[0].date) + daysLeft(renewals[0].date)
+      : renewals.map(r => `<span class="renewal-line">${escapeHTML(r.club)} · ${longDate(r.date)}${daysLeft(r.date)}</span>`).join('');
+
+    // Every redeemed session across all their clubs, newest first
+    const clubNames = Object.keys(m.clubs || {});
+    const history = [];
+    clubNames.forEach(c => {
+      const r = m.clubs[c] && m.clubs[c].redemptions;
+      if (Array.isArray(r)) r.forEach(x => x && x.date && history.push({ ...x, club: c }));
+    });
+    history.sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.recordedAt).localeCompare(String(a.recordedAt)));
+    const showClub = new Set(history.map(h => h.club)).size > 1;
+    $('ma-history-row').hidden = !history.length;
+    $('ma-history').innerHTML = history.map(h => `<li>
+      <span>${escapeHTML(SESSION_LABELS[h.session] || h.session)}${showClub ? `<span class="history-club">${escapeHTML(h.club)}</span>` : ''}</span>
+      <span>${formatISODate(h.date)}</span></li>`).join('');
+
+    window.resetLoginForm();
+    showView('member');
+  }
+
+  // ---------- Clubs ----------
+  const CLUBS = ['Skin Club', 'Tox Club', 'Bro Tox Club', 'Exclusive Club'];
+
+  // What comes with each club, and the sessions saved to the member when it's added.
+  // Add the details for the other clubs here.
+  const CLUB_DETAILS = {
+    'Skin Club': {
+      sections: [
+        { title: "What's included", items: [
+          'In depth full skin analysis',
+          'Bio re peel chemical treatments – <strong>6 sessions</strong>',
+          'Microneedling – <strong>6 sessions</strong>',
+          'Luxury dermaplane facials – <strong>6 sessions</strong>'
+        ]},
+        { title: 'Aftercare & Support', items: [
+          'Aftercare & 3 step skin care package for at home use between treatments',
+          'Skin progress tracking / on-going professional support'
+        ]}
+      ],
+      sessions: [
+        { key: 'analysisSession',      label: 'Skin analysis',            pending: 1 },
+        { key: 'bioSession',           label: 'Bio re peel',              pending: 6 },
+        { key: 'microneedlingSession', label: 'Microneedling',            pending: 6 },
+        { key: 'facialsSession',       label: 'Luxury dermaplane facials', pending: 6 }
+      ]
+    },
+    'Tox Club': {
+      sections: [
+        { title: "What's included", items: [
+          '3 areas <strong>(every 4 months)</strong>',
+          'Course skin boosters',
+          '<strong>10% OFF</strong> any skin treatment'
+        ]}
+      ],
+      sessions: [
+        { key: 'areasSession1', label: '3 areas – 1st treatment', pending: 1 },
+        { key: 'areasSession2', label: '3 areas – 2nd treatment', pending: 1 },
+        { key: 'areasSession3', label: '3 areas – 3rd treatment', pending: 1 }
+      ]
+    },
+    'Bro Tox Club': null,
+    'Exclusive Club': null   // built below from Skin Club + Tox Club
+  };
+
+  // Exclusive Club = Skin Club and Tox Club combined
+  (() => {
+    const skin = CLUB_DETAILS['Skin Club'];
+    const tox = CLUB_DETAILS['Tox Club'];
+    const included = (d) => d.sections.find(s => s.title === "What's included")?.items || [];
+    const others = (d) => d.sections.filter(s => s.title !== "What's included");
+    CLUB_DETAILS['Exclusive Club'] = {
+      sections: [
+        { title: "What's included", items: ['Both <strong>Skin Club &amp; Tox Club</strong> combined'] },
+        { title: 'From Skin Club', items: included(skin) },
+        { title: 'From Tox Club', items: included(tox) },
+        ...others(skin),
+        ...others(tox)
+      ],
+      sessions: [...skin.sessions, ...tox.sessions].map(s => ({ ...s }))
+    };
+  })();
+
+  // Session fields end in "Session", optionally followed by a number (bioSession, areasSession2)
+  const isSessionKey = (k) => /Session\d*$/.test(k);
+
+  // Friendly names for session fields, used when showing a member's sessions
+  const SESSION_LABELS = {};
+  Object.values(CLUB_DETAILS).forEach(d => d && d.sessions.forEach(s => { SESSION_LABELS[s.key] = s.label; }));
+  // Optional extra added from the Add Club page
+  const BIRTHDAY_SESSION = { key: 'birthdaySession', label: 'Birthday session', pending: 1 };
+  SESSION_LABELS[BIRTHDAY_SESSION.key] = BIRTHDAY_SESSION.label;
+  // Gratuity sessions are kept in their own entry alongside the member's clubs
+  const GRATUITY = 'Gratuity';
+  SESSION_LABELS.gratuitySession = 'Gratuity session';
+
+  function clubDetailsHTML(club) {
+    const details = CLUB_DETAILS[club];
+    if (!details) return `<h4>${escapeHTML(club)}</h4><p class="tbc">Details for this club are still to be added.</p>`;
+    return details.sections.map(s =>
+      `<h4>${escapeHTML(s.title)}</h4><ul>${s.items.map(i => `<li>${i}</li>`).join('')}</ul>`
+    ).join('');
+  }
+
+  // Dates for redeemed sessions are stored as YYYY-MM-DD
+  const todayISO = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+  const formatISODate = (iso) => {
+    const [y, m, d] = String(iso).split('-').map(Number);
+    return y ? new Date(y, m - 1, d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : iso;
+  };
+  function lastRedeemed(redemptions, key) {
+    if (!Array.isArray(redemptions)) return '';
+    return redemptions.filter(r => r && r.session === key && r.date).map(r => r.date).sort().pop() || '';
+  }
+
+  // A member's clubs, e.g.
+  // { "Skin Club": { addedAt: <date>, analysisSession: 1, bioSession: 6, ... } }
+  function clubListHTML(clubs) {
+    if (!clubs || typeof clubs !== 'object') return '';
+    const names = Object.keys(clubs).sort((a, b) => {
+      const ia = CLUBS.indexOf(a), ib = CLUBS.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+    });
+    return names.map(name => {
+      const v = clubs[name] || {};
+      const added = v.addedAt && typeof v.addedAt.toDate === 'function'
+        ? `<span class="club-added">since ${v.addedAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>`
+        : '';
+      // Sessions in the club's usual order, then any others
+      const order = (CLUB_DETAILS[name]?.sessions || []).map(s => s.key);
+      const keys = Object.keys(v).filter(k => isSessionKey(k) && typeof v[k] === 'number')
+        .sort((a, b) => ((order.indexOf(a) + 1) || 99) - ((order.indexOf(b) + 1) || 99));
+      const sessions = keys.length
+        ? `<ul class="session-list">${keys.map(k => {
+            const last = lastRedeemed(v.redemptions, k);
+            return `
+            <li><span>${escapeHTML(SESSION_LABELS[k] || k)}${last ? `<span class="session-last">Last redeemed ${formatISODate(last)}</span>` : ''}</span>
+            <span class="session-count${v[k] ? '' : ' done'}">${v[k]} pending</span></li>`;
+          }).join('')}</ul>`
+        : '';
+      const renews = v.renewalDate
+        ? `<span class="club-renewal">Renews ${formatISODate(v.renewalDate)}</span>`
+        : '';
+      return `<li class="club-item"><div class="club-head"><span class="club-name">${escapeHTML(name)}</span>${added}</div>${renews}${sessions}</li>`;
+    }).join('');
+  }
+
+  window.clearMemberPage = () => {
+    currentMember = null;
+    ['ma-name', 'ma-status', 'ma-created'].forEach(id => $(id).textContent = '');
+    $('ma-status').className = 'status-badge';
+    $('ma-code').value = '';
+    $('ma-code').className = 'code-box';
+    $('ma-copy').hidden = true;
+    resetCopyButton();
+    $('ma-clubs-row').hidden = true;
+    $('ma-clubs').innerHTML = '';
+    $('ma-renewal-row').hidden = true;
+    $('ma-renewal').innerHTML = '';
+    $('ma-history-row').hidden = true;
+    $('ma-history').innerHTML = '';
+  };
+
+  // ---------- Copy booking code ----------
+  let copyTimer = null;
+  function resetCopyButton() {
+    clearTimeout(copyTimer);
+    $('ma-copy').classList.remove('copied');
+    $('ma-copy-label').textContent = 'Copy';
+  }
+
+  window.copyBookingCode = async () => {
+    const code = $('ma-code').value;
+    if (!code) return;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(code);
+      ok = true;
+    } catch {
+      // Fallback for older browsers or pages not served over https
+      const box = $('ma-code');
+      box.select();
+      box.setSelectionRange(0, code.length);
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      window.getSelection()?.removeAllRanges();
+    }
+    const btn = $('ma-copy');
+    btn.classList.toggle('copied', ok);
+    $('ma-copy-label').textContent = ok ? 'Copied!' : 'Press & hold to copy';
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(resetCopyButton, 2000);
+  };
+
+  window.memberLogout = () => {
+    window.clearMemberPage();
+    showView('home');
+  };
+
+  // ---------- Expired renewals ----------
+  // One entry per club whose renewal date is before today
+  function findExpired(members) {
+    const today = todayISO();
+    const now = new Date();
+    const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const list = [];
+    members.forEach(m => Object.keys(m.clubs || {}).forEach(club => {
+      const date = m.clubs[club] && m.clubs[club].renewalDate;
+      if (!date || date >= today) return;
+      const [y, mo, d] = String(date).split('-').map(Number);
+      list.push({
+        memberId: m.id, name: fullName(m), phone: m.phoneNumber || '', status: m.membershipStatus || 'Pending',
+        club, date, daysOverdue: Math.round((todayUTC - Date.UTC(y, mo - 1, d)) / 86400000)
+      });
+    }));
+    return list.sort((a, b) => b.daysOverdue - a.daysOverdue || a.name.localeCompare(b.name));
+  }
+
+  let expiredRows = [];
+  const exSelected = new Set();   // row keys "memberId|club" ticked for bulk actions
+  const rowKey = (r) => `${r.memberId}|${r.club}`;
+
+  function renderExpired() {
+    const list = $('ex-list');
+    const people = new Set(expiredRows.map(e => e.memberId)).size;
+    $('ex-status').textContent = expiredRows.length
+      ? `${people} member${people === 1 ? '' : 's'} with ${expiredRows.length} expired club renewal${expiredRows.length === 1 ? '' : 's'} · most overdue first`
+      : '';
+    list.innerHTML = expiredRows.length
+      ? expiredRows.map(e => {
+          const pending = e.status === 'Pending';
+          const key = rowKey(e);
+          return `
+          <li class="expired-item${pending ? ' is-pending' : ''}" data-key="${escapeHTML(key)}">
+            <label class="expired-check" title="Select">
+              <input type="checkbox" data-key="${escapeHTML(key)}" ${exSelected.has(key) ? 'checked' : ''} aria-label="Select ${escapeHTML(e.name)}, ${escapeHTML(e.club)}">
+            </label>
+            <div class="expired-main">
+              <div class="expired-name">${escapeHTML(e.name)}</div>
+              <div class="expired-meta"><strong>${escapeHTML(e.club)}</strong> · ${escapeHTML(e.phone || 'No phone')} ·
+                <span class="mini-status ${pending ? 'pending' : 'active'}">${escapeHTML(e.status)}</span></div>
+            </div>
+            <div class="expired-right">
+              <div class="expired-date">Renewal was ${formatISODate(e.date)}</div>
+              <span class="overdue-badge">${e.daysOverdue} day${e.daysOverdue === 1 ? '' : 's'} overdue</span>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="redeem-btn" data-act="reset" data-key="${escapeHTML(key)}">Clear &amp; Set to Pending</button>
+              <button type="button" class="redeem-btn danger" data-act="delete" data-key="${escapeHTML(key)}">Delete Member</button>
+            </div>
+          </li>`;
+        }).join('')
+      : '<li class="empty">No expired renewals. Every club renewal date is today or later.</li>';
+
+    // Bulk bar
+    const n = exSelected.size;
+    $('ex-bulk').hidden = !expiredRows.length;
+    $('ex-select-all').checked = n > 0 && n === expiredRows.length;
+    $('ex-select-all').indeterminate = n > 0 && n < expiredRows.length;
+    $('ex-select-label').textContent = n ? `${n} selected` : 'Select all';
+    const sel = selectedRows();
+    const members = [...new Set(sel.map(r => r.memberId))];
+    const btn = (k) => document.querySelector(`#ex-bulk [data-bulk="${k}"]`);
+    btn('reset').disabled = !sel.length;
+    btn('reset').textContent = sel.length
+      ? `Clear ${sel.length} Club${sel.length === 1 ? '' : 's'} & Set to Pending`
+      : 'Clear & Set to Pending';
+    btn('delete').disabled = !members.length;
+    btn('delete').textContent = members.length ? `Delete ${members.length} Member${members.length === 1 ? '' : 's'}` : 'Delete Members';
+  }
+
+  const selectedRows = () => expiredRows.filter(r => exSelected.has(rowKey(r)));
+
+  window.loadExpired = async () => {
+    $('ex-status').textContent = 'Loading…';
+    $('ex-list').innerHTML = '';
+    $('ex-bulk').hidden = true;
+    exSelected.clear();
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      expiredRows = findExpired(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      renderExpired();
+    } catch (err) {
+      console.error(err);
+      $('ex-status').textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load renewals. Please check your connection and try again.';
+    }
+  };
+
+  function exMessage(text, ok = true) {
+    $('ex-msg').textContent = text;
+    $('ex-msg').classList.toggle('ok', ok);
+  }
+
+  // Selecting
+  $('ex-list').addEventListener('change', (e) => {
+    const box = e.target.closest('input[type="checkbox"][data-key]');
+    if (!box) return;
+    if (box.checked) exSelected.add(box.dataset.key); else exSelected.delete(box.dataset.key);
+    renderExpired();
+  });
+  $('ex-select-all').addEventListener('change', (e) => {
+    exSelected.clear();
+    if (e.target.checked) expiredRows.forEach(r => exSelected.add(rowKey(r)));
+    renderExpired();
+  });
+
+  // Single-row actions
+  $('ex-list').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-act]');
+    if (!b || b.disabled) return;
+    const row = expiredRows.find(r => rowKey(r) === b.dataset.key);
+    if (!row) return;
+    if (b.dataset.act === 'reset') confirmClearAndPending([row]);
+    if (b.dataset.act === 'delete') confirmDeleteMembers([row.memberId]);
+  });
+
+  // Bulk actions
+  $('ex-bulk').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-bulk]');
+    if (!b || b.disabled) return;
+    const sel = selectedRows();
+    const ids = [...new Set(sel.map(r => r.memberId))];
+    if (b.dataset.bulk === 'reset') confirmClearAndPending(sel);
+    if (b.dataset.bulk === 'delete') confirmDeleteMembers(ids);
+  });
+
+  const nameList = (items) => {
+    const shown = items.slice(0, 8).map(t => `<li>${escapeHTML(t)}</li>`).join('');
+    return `<ul class="modal-names">${shown}${items.length > 8 ? `<li>…and ${items.length - 8} more</li>` : ''}</ul>`;
+  };
+  const memberRow = (id) => expiredRows.find(r => r.memberId === id);
+
+  // Commit writes in chunks (Firestore allows up to 500 per batch)
+  async function commitInChunks(ops) {
+    for (let i = 0; i < ops.length; i += 450) {
+      const batch = writeBatch(db);
+      ops.slice(i, i + 450).forEach(fn => fn(batch));
+      await batch.commit();
+    }
+  }
+
+  function runModalAction(yesLabel, busyLabel, work) {
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      if (yesBtn.disabled) return;
+      yesBtn.disabled = true;
+      yesBtn.textContent = busyLabel;
+      $('modal-msg').textContent = '';
+      try {
+        const message = await work();
+        closeModal(true);
+        exSelected.clear();
+        renderExpired();
+        exMessage(message, true);
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = yesLabel;
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'Permission denied. Please sign in again.'
+          : 'Something went wrong. Please try again.';
+      }
+    };
+  }
+
+  // Clear the expired club(s) AND set the member back to Pending, in one save per member
+  function confirmClearAndPending(rows) {
+    if (!rows.length) return;
+    const byMember = new Map();
+    rows.forEach(r => { if (!byMember.has(r.memberId)) byMember.set(r.memberId, []); byMember.get(r.memberId).push(r); });
+    const memberCount = byMember.size;
+
+    openModal(rows.length === 1 ? 'Clear Club & Set to Pending?'
+      : `Clear ${rows.length} Clubs & Set ${memberCount} Member${memberCount === 1 ? '' : 's'} to Pending?`, `
+      <p>For each of the following, the expired club will be removed and the member set to <strong>Pending</strong>:</p>
+      ${nameList(rows.map(r => `${r.name} – ${r.club}`))}
+      <p class="warn-text">All sessions, the renewal date and the redemption history for ${rows.length === 1 ? 'this club' : 'these clubs'} will be deleted and cannot be recovered.</p>
+      <p>Their account and any other clubs are kept. They will see an orange Pending label and their booking code will be hidden until you set them back to Active.</p>`,
+      'Yes, Clear & Set to Pending', 'No');
+    $('modal').querySelector('.modal').classList.add('danger');
+    $('modal-yes').className = 'btn-danger';
+
+    runModalAction('Yes, Clear & Set to Pending', 'Updating…', async () => {
+      await commitInChunks([...byMember.entries()].map(([id, list]) => (batch) => {
+        const args = [];
+        list.forEach(r => args.push(new FieldPath('clubs', r.club), deleteField()));
+        args.push('membershipStatus', 'Pending');
+        batch.update(doc(db, 'members', id), ...args);
+      }));
+      const cleared = new Set(rows.map(rowKey));
+      expiredRows = expiredRows.filter(r => !cleared.has(rowKey(r)));
+      expiredRows.forEach(r => { if (byMember.has(r.memberId)) r.status = 'Pending'; });
+      return rows.length === 1
+        ? `${rows[0].club} cleared and ${rows[0].name} set to Pending.`
+        : `${rows.length} club${rows.length === 1 ? '' : 's'} cleared and ${memberCount} member${memberCount === 1 ? '' : 's'} set to Pending.`;
+    });
+  }
+
+  // 3. Delete members completely (member record + phone number entry)
+  function confirmDeleteMembers(ids) {
+    if (!ids.length) return;
+    const names = ids.map(id => memberRow(id).name);
+    openModal(ids.length === 1 ? 'Delete Member?' : `Delete ${ids.length} Members?`, `
+      <p>You are about to <strong>permanently delete</strong>:</p>
+      ${nameList(names)}
+      <p class="warn-text">All of their records will be removed: their account, all clubs, sessions, renewal dates, redemption history and their mobile number. This cannot be undone and they will need to register again.</p>
+      <label class="type-confirm">Type <strong>DELETE</strong> to confirm
+        <input class="field" type="text" id="ex-type-confirm" autocomplete="off" autocapitalize="characters">
+      </label>`,
+      ids.length === 1 ? 'Yes, Delete' : `Yes, Delete ${ids.length}`, 'No, Keep');
+    $('modal').querySelector('.modal').classList.add('danger');
+    $('modal-yes').className = 'btn-danger';
+    $('modal-yes').disabled = true;
+    $('ex-type-confirm').addEventListener('input', (e) => {
+      $('modal-yes').disabled = e.target.value.trim().toUpperCase() !== 'DELETE';
+    });
+    $('ex-type-confirm').focus();
+    const yesLabel = ids.length === 1 ? 'Yes, Delete' : `Yes, Delete ${ids.length}`;
+    runModalAction(yesLabel, 'Deleting…', async () => {
+      // Find each member's phone entry so the mobile number is freed too
+      const ops = [];
+      for (const id of ids) {
+        ops.push((batch) => batch.delete(doc(db, 'members', id)));
+        const phone = memberRow(id).phone;
+        if (phone) {
+          const snap = await getDoc(doc(db, 'memberPhones', phone));
+          if (snap.exists() && snap.data().memberId === id) ops.push((batch) => batch.delete(doc(db, 'memberPhones', phone)));
+        }
+      }
+      await commitInChunks(ops);
+      expiredRows = expiredRows.filter(r => !ids.includes(r.memberId));
+      return ids.length === 1 ? `${names[0]} has been deleted.` : `${ids.length} members have been deleted.`;
+    });
+  }
+
+  // ---------- Guide & help ----------
+  // One set of guide topics, used by the How It Works page and the ⓘ buttons on each page.
+  const GUIDE = {
+    members: [
+      { id: 'm-myaccount', title: 'Getting started', where: 'Home › My Account', html: `
+        <p>Tap <strong>My Account</strong> on the home page. From there you can:</p>
+        <ul><li><strong>Create New Membership Account</strong> if you're new to the clinic.</li>
+        <li><strong>Log In To Your Membership Account</strong> if you already have one.</li></ul>` },
+      { id: 'm-create', title: 'Creating your account', where: 'My Account › Create New Membership Account', html: `
+        <ol><li>Enter your <strong>first and last name</strong>.</li>
+        <li>Choose your <strong>birthday month</strong>.</li>
+        <li>Enter your <strong>mobile number</strong>: 11 digits starting 07.</li>
+        <li>Choose a <strong>memorable word</strong> you'll remember. You'll need it to log in.</li>
+        <li>Tap <strong>Create Account</strong>, check your details and tap <strong>Yes</strong>.</li></ol>
+        <p>Your account starts as <span class="chip-pending">Pending</span> until the clinic confirms your payment.</p>
+        <p class="tip">Tap Abort at any time to cancel. Nothing is saved.</p>` },
+      { id: 'm-login', title: 'Logging in', where: 'My Account › Log In', html: `
+        <p>Enter your <strong>full name</strong>, <strong>birthday month</strong> and <strong>memorable word</strong>, exactly as you signed up.</p>
+        <p>Capital letters don't matter.</p>
+        <p class="tip">If it says your details are incorrect, check your birthday month first, then your memorable word.</p>` },
+      { id: 'm-summary', title: 'Your account summary', where: 'After logging in', html: `
+        <ul><li><strong>Membership status</strong>: see "Status labels" below.</li>
+        <li><strong>Account opened date</strong>: when you joined.</li>
+        <li><strong>Renewal date</strong>: when your club renews, and how many days are left.</li>
+        <li><strong>Booking code</strong>: appears once you're Active. Tap <strong>Copy</strong> to copy it for booking.</li></ul>` },
+      { id: 'm-clubs', title: 'Your clubs and sessions', where: 'Account summary › Your Clubs', html: `
+        <p>Each club you belong to lists its treatments and how many sessions you have <span class="chip-pending">pending</span>.</p>
+        <p>After each visit the clinic records your session. It comes off your pending count and appears in your <strong>Redemption History</strong> with the date.</p>
+        <p class="tip">Birthday and gratuity (complimentary) sessions show here too when they've been added.</p>` },
+      { id: 'm-status', title: 'Status labels', where: 'Account summary', html: `
+        <ul><li><span class="chip-pending">Pending</span>: waiting for payment or renewal. Your booking code is hidden.</li>
+        <li><span class="chip-active">Active</span>: you're all set and your booking code is shown.</li></ul>
+        <p>Your renewal date turns orange when it's 30 days or less away.</p>` }
+    ],
+    team: [
+      { id: 't-signin', title: 'Signing in', where: 'Home › Clinic Team Management', html: `
+        <p>Sign in with your clinic email and password.</p>
+        <p class="tip">Forgotten your password? Enter your email and tap <strong>Forgotten your password?</strong> to get a reset link.</p>
+        <p>You stay signed in until you tap <strong>Sign Out</strong>, even if you go back to the home page.</p>` },
+      { id: 't-admin', title: 'The Clinic Team Management page', where: 'Clinic Team Management', html: `
+        <ul><li><strong>Membership Management</strong>: activate or delete member accounts.</li>
+        <li><strong>Club Management</strong>: add clubs, record redeemed sessions and gift gratuity sessions.</li>
+        <li><strong>Misc Tools</strong>: insights, expired renewals, birthdays and this guide.</li></ul>` },
+      { id: 't-activate', title: 'Activating a new member', where: 'Membership Management › Activate Membership Account', html: `
+        <ol><li>Choose the member from the list.</li>
+        <li>Set their status to <span class="chip-active">Active</span>.</li>
+        <li>Enter their <strong>booking code</strong> and tap <strong>Save Changes</strong>, then confirm.</li>
+        <li>On your phone, tap <strong>Send WhatsApp Message</strong> to let them know. It works on phones and tablets only.</li></ol>
+        <p class="tip">Names and the opened date can't be changed here. A member's name is part of how they log in.</p>` },
+      { id: 't-delete', title: 'Deleting a member', where: 'Membership Management › Delete Membership Account', html: `
+        <p>Choose the member, check their summary, then tap <strong>Delete Account</strong> and confirm.</p>
+        <p class="careful">This removes everything, including their clubs, history and mobile number. It can't be undone, and they'll need to register again.</p>` },
+      { id: 't-addclub', title: 'Adding a club', where: 'Club Management › Add Club to Membership', html: `
+        <ol><li>Choose an <span class="chip-active">Active</span> member.</li>
+        <li>Pick the club and check the <strong>What's Included</strong> summary.</li>
+        <li>Switch on <strong>Include Birthday Session</strong> if relevant. It's off by default.</li>
+        <li>Check the <strong>Renewal Date</strong>. It defaults to the 1st of this month next year.</li>
+        <li>Tap <strong>Submit</strong> and confirm.</li></ol>
+        <p class="tip">Exclusive Club includes everything in Skin Club and Tox Club. You'll get a note if the member already has one of those.</p>` },
+      { id: 't-redeem', title: 'Recording a visit', where: 'Club Management › Update Club Membership', html: `
+        <ol><li>Choose the member, and the club if they have more than one.</li>
+        <li>Set the <strong>Redeemed Date</strong>. It's today by default.</li>
+        <li>Tap <strong>Redeem</strong> next to the treatment and confirm.</li></ol>
+        <p>It takes one off their pending count and adds it to their history. The button greys out when none are left.</p>` },
+      { id: 't-gratuity', title: 'Gifting sessions', where: 'Club Management › Gratuity Sessions', html: `
+        <p>Choose an Active member, set how many complimentary sessions to gift (1–50), then tap <strong>Gift Sessions</strong>.</p>
+        <p>Gifts are added to any they already have. They redeem in <strong>Update Club Membership</strong> like any other session.</p>` },
+      { id: 't-insights', title: 'Portfolio Insights', where: 'Misc Tools › Portfolio Insights', html: `
+        <p>The big picture: total and Active accounts, expired renewals, members per club, and sessions redeemed in total and this month.</p>
+        <p class="tip">Tap the Expired Renewals tile to go straight to the list.</p>` },
+      { id: 't-expired', title: 'Expired renewals', where: 'Misc Tools › Expired Renewals', html: `
+        <p>Lists every club whose renewal date has passed, most overdue first. For one member, or several using the tick boxes:</p>
+        <ul><li><strong>Clear &amp; Set to Pending</strong>: removes the expired club and sets the member to Pending. Their other clubs are kept.</li>
+        <li><strong>Delete Member</strong>: removes the member completely. You'll be asked to type DELETE.</li></ul>` },
+      { id: 't-birthdays', title: 'Birthday sessions', where: 'Misc Tools › Birthday Sessions', html: `
+        <p>Members grouped by birthday month, starting with this month. Each shows whether their birthday session is <span class="chip-pending">not yet redeemed</span>, <span class="chip-active">redeemed</span>, or not included.</p>` },
+      { id: 't-monthly', title: 'Monthly housekeeping', where: 'Suggested routine', html: `
+        <ol><li>Check <strong>Expired Renewals</strong> and tidy up lapsed members.</li>
+        <li>Check <strong>Birthday Sessions</strong> for who's due a birthday treatment.</li>
+        <li>Glance at <strong>Portfolio Insights</strong>.</li></ol>` },
+      { id: 't-careful', title: 'Things to be careful with', where: 'Good to know', html: `
+        <p class="careful">Deleting a member, and clearing a club, can't be undone. Every action asks you to confirm first, so read the pop-up before tapping Yes.</p>` }
+    ]
+  };
+
+  // Which topics each page's ⓘ button shows
+  const PAGE_HELP = {
+    'account': ['m-myaccount'], 'join': ['m-create'], 'login': ['m-login'],
+    'member': ['m-summary', 'm-clubs', 'm-status'],
+    'admin-login': ['t-signin'], 'admin': ['t-admin', 't-monthly'],
+    'admin-update': ['t-activate'], 'admin-delete': ['t-delete'],
+    'admin-club': ['t-addclub'], 'admin-redeem': ['t-redeem'], 'admin-gratuity': ['t-gratuity'],
+    'admin-insights': ['t-insights'], 'admin-expired': ['t-expired', 't-careful'],
+    'admin-birthdays': ['t-birthdays']
+  };
+  const topicById = (id) => [...GUIDE.members, ...GUIDE.team].find(t => t.id === id);
+
+  // Add a clear "ⓘ How this page works" button under each page title
+  Object.keys(PAGE_HELP).forEach(view => {
+    const section = $('view-' + view);
+    const heading = section && section.querySelector('h2');
+    if (!heading) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'help-btn attention';
+    btn.innerHTML = '<span class="i" aria-hidden="true">i</span><span>How this page works</span>';
+    btn.setAttribute('aria-label', 'How this page works');
+    btn.addEventListener('click', () => {
+      const topics = PAGE_HELP[view].map(topicById);
+      showInfo(topics.length === 1 ? topics[0].title : heading.textContent,
+        `<div class="guide-body">${topics.map(t => (topics.length > 1 ? `<h4 class="guide-topic-title">${escapeHTML(t.title)}</h4>` : '') + t.html).join('')}</div>`);
+    });
+    heading.insertAdjacentElement('afterend', btn);
+  });
+
+  // How It Works page
+  let guideTab = 'members';
+  let guideFrom = 'home';   // where the Back link returns to
+  function renderGuide() {
+    // Both tabs are open to everyone
+    document.querySelectorAll('#guide-tabs .guide-tab').forEach(t => {
+      t.setAttribute('aria-selected', t.dataset.tab === guideTab ? 'true' : 'false');
+    });
+    $('guide-list').innerHTML = GUIDE[guideTab].map(t => `
+      <details class="guide-item">
+        <summary><span>${escapeHTML(t.title)}<span class="where">${escapeHTML(t.where)}</span></span></summary>
+        <div class="guide-body">${t.html}</div>
+      </details>`).join('');
+    // Back link returns to the page the guide was opened from
+    $('guide-back').innerHTML = guideFrom === 'admin' ? '&larr; Back to Clinic Team Management' : '&larr; Back to Home';
+    $('guide-back').onclick = () => showView(guideFrom);
+  }
+  window.openGuide = (tab) => {
+    guideTab = tab;
+    guideFrom = tab === 'team' && window.adminUser ? 'admin' : 'home';
+    showView('guide');
+    renderGuide();
+  };
+  $('guide-tabs').addEventListener('click', (e) => {
+    const t = e.target.closest('.guide-tab');
+    if (!t) return;
+    guideTab = t.dataset.tab;
+    renderGuide();
+  });
+
+  // ---------- Admin: Gratuity Sessions ----------
+  let gratuityMember = null;
+
+  window.loadGratuityList = async () => {
+    const sel = $('gr-select');
+    const msg = $('gr-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    $('gr-form').hidden = true;
+    gratuityMember = null;
+    sel.innerHTML = '<option value="">Loading members…</option>';
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      const active = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(m => m.membershipStatus === 'Active')
+        .sort((a, b) => fullName(a).localeCompare(fullName(b)));
+      const counts = {};
+      active.forEach(m => { const k = fullName(m).toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+      sel.innerHTML = active.length
+        ? '<option value="">Select an active member…</option>' + active.map(m => {
+            const dup = counts[fullName(m).toLowerCase()] > 1 && m.phoneNumber ? ` (…${m.phoneNumber.slice(-4)})` : '';
+            return `<option value="${m.id}">${escapeHTML(fullName(m) + dup)}</option>`;
+          }).join('')
+        : '<option value="">No active members yet</option>';
+    } catch (err) {
+      console.error(err);
+      sel.innerHTML = '<option value="">Could not load members</option>';
+      msg.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+
+  function showGratuityMember() {
+    const m = gratuityMember;
+    const g = m.clubs && m.clubs[GRATUITY];
+    const n = g && typeof g.gratuitySession === 'number' ? g.gratuitySession : 0;
+    $('gr-member-name').textContent = fullName(m);
+    $('gr-current').innerHTML = `Current gratuity sessions pending: <strong>${n}</strong>`;
+  }
+
+  $('gr-select').addEventListener('change', async (e) => {
+    const id = e.target.value;
+    const msg = $('gr-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    $('gr-msg').textContent = '';
+    $('gr-count').value = '1';
+    $('gr-count').classList.remove('invalid');
+    if (!id) { $('gr-form').hidden = true; gratuityMember = null; return; }
+    try {
+      const snap = await getDoc(doc(db, 'members', id));
+      if (!snap.exists()) { msg.textContent = 'This member no longer exists.'; $('gr-form').hidden = true; return; }
+      gratuityMember = { id, ...snap.data() };
+      if (gratuityMember.membershipStatus !== 'Active') {
+        msg.textContent = 'This member is no longer Active.';
+        $('gr-form').hidden = true;
+        return;
+      }
+      showGratuityMember();
+      $('gr-form').hidden = false;
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Could not load this member. Please try again.';
+    }
+  });
+
+  // − / + buttons
+  document.querySelectorAll('#gr-form .step-btn').forEach(b => b.addEventListener('click', () => {
+    const v = parseInt($('gr-count').value, 10) || 0;
+    $('gr-count').value = Math.min(50, Math.max(1, v + Number(b.dataset.step)));
+    $('gr-count').classList.remove('invalid');
+    $('gr-msg').textContent = '';
+  }));
+  $('gr-count').addEventListener('input', () => { $('gr-count').classList.remove('invalid'); $('gr-msg').textContent = ''; });
+
+  window.cancelGratuity = () => {
+    $('gr-select').value = '';
+    $('gr-form').hidden = true;
+    gratuityMember = null;
+  };
+
+  window.submitGratuity = () => {
+    if (!gratuityMember) return;
+    const m = gratuityMember;
+    const raw = $('gr-count').value.trim();
+    const count = Number(raw);
+    $('gr-msg').textContent = '';
+    if (raw === '' || !Number.isInteger(count) || count < 1 || count > 50) {
+      $('gr-count').classList.add('invalid');
+      $('gr-msg').textContent = 'Please enter a whole number from 1 to 50.';
+      return;
+    }
+    const g = m.clubs && m.clubs[GRATUITY];
+    const current = g && typeof g.gratuitySession === 'number' ? g.gratuitySession : 0;
+
+    openModal('Gift Gratuity Sessions?', `
+      <p>Gift <strong>${count} gratuity session${count === 1 ? '' : 's'}</strong> to <strong>${escapeHTML(fullName(m))}</strong>?</p>
+      <dl class="changes"><dt>Gratuity sessions pending</dt><dd><del>${current}</del> → ${current + count}</dd></dl>
+      <p>They will be able to see these on their account summary, and you can redeem them in Update Club Membership.</p>`);
+
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Saving…';
+      $('modal-msg').textContent = '';
+      const gift = {
+        count,
+        date: todayISO(),
+        recordedAt: new Date().toISOString(),
+        recordedBy: auth.currentUser ? auth.currentUser.email : null
+      };
+      try {
+        const ref = doc(db, 'members', m.id);
+        const args = [
+          new FieldPath('clubs', GRATUITY, 'gratuitySession'), increment(count),
+          new FieldPath('clubs', GRATUITY, 'gifts'), arrayUnion(gift)
+        ];
+        if (!g) args.push(new FieldPath('clubs', GRATUITY, 'addedAt'), serverTimestamp());
+        await updateDoc(ref, ...args);
+        closeModal(true);
+
+        m.clubs = m.clubs || {};
+        m.clubs[GRATUITY] = {
+          ...(g || { addedAt: { toDate: () => new Date() } }),
+          gratuitySession: current + count,
+          gifts: [...((g && g.gifts) || []), gift]
+        };
+        showGratuityMember();
+        $('gr-count').value = '1';
+        $('gr-list-msg').textContent = `${count} gratuity session${count === 1 ? '' : 's'} gifted to ${fullName(m)}. They now have ${current + count} pending.`;
+        $('gr-list-msg').classList.add('ok');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes';
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'Permission denied. Please sign in again.'
+          : 'Could not save. Please try again.';
+      }
+    };
+  };
+
+  // ---------- Admin: Birthday Sessions ----------
+  let bdMembers = [];
+
+  // Each member's birthday session(s) across their clubs
+  function birthdayInfo(m) {
+    return Object.keys(m.clubs || {}).sort()
+      .filter(c => m.clubs[c] && typeof m.clubs[c].birthdaySession === 'number')
+      .map(c => {
+        const pending = m.clubs[c].birthdaySession > 0;
+        return { club: c, pending, redeemedOn: pending ? '' : lastRedeemed(m.clubs[c].redemptions, 'birthdaySession') };
+      });
+  }
+
+  function renderBirthdays() {
+    const onlyWithSession = $('bd-only').checked;
+    const thisMonth = new Date().getMonth();
+    let html = '';
+    let shownAny = false;
+
+    // Start with this month, then the months after it, round the year
+    for (let i = 0; i < 12; i++) {
+      const monthIndex = (thisMonth + i) % 12;
+      const month = MONTHS[monthIndex];
+      const people = bdMembers
+        .filter(m => m.birthdayMonth === month)
+        .map(m => ({ m, sessions: birthdayInfo(m) }))
+        .filter(x => !onlyWithSession || x.sessions.length)
+        .sort((a, b) => fullName(a.m).localeCompare(fullName(b.m)));
+      if (!people.length) continue;
+      shownAny = true;
+
+      const when = i === 0 ? 'This month' : i === 1 ? 'Next month' : `In ${i} months`;
+      html += `
+        <section class="bd-month${i === 0 ? ' current' : ''}">
+          <div class="bd-month-head"><h3>${month}</h3><span class="when">${when} · ${people.length} member${people.length === 1 ? '' : 's'}</span></div>
+          <ul class="bd-rows">${people.map(({ m, sessions }) => {
+            const chips = sessions.length
+              ? sessions.map(s => s.pending
+                  ? `<span class="bd-chip pending">${escapeHTML(s.club)} · Not yet redeemed</span>`
+                  : `<span class="bd-chip done">${escapeHTML(s.club)} · Redeemed${s.redeemedOn ? ' ' + formatISODate(s.redeemedOn) : ''}</span>`).join('')
+              : '<span class="bd-chip">No birthday session</span>';
+            return `<li class="bd-row">
+              <div><span class="bd-name">${escapeHTML(fullName(m))}</span>
+                <span class="bd-meta">${escapeHTML(m.phoneNumber || 'No phone')} · ${escapeHTML(m.membershipStatus || 'Pending')}</span></div>
+              <div class="bd-chips">${chips}</div>
+            </li>`;
+          }).join('')}</ul>
+        </section>`;
+    }
+    $('bd-list').innerHTML = shownAny ? html
+      : `<p class="empty">${onlyWithSession ? 'No members have a birthday session yet.' : 'No members yet.'}</p>`;
+  }
+
+  window.loadBirthdays = async () => {
+    const status = $('bd-status');
+    status.textContent = 'Loading…';
+    $('bd-list').innerHTML = '';
+    $('bd-summary').hidden = true;
+    $('bd-filter-wrap').hidden = true;
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      bdMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const thisMonthName = MONTHS[new Date().getMonth()];
+      const all = bdMembers.flatMap(birthdayInfo);
+      const thisMonthCount = bdMembers.filter(m => m.birthdayMonth === thisMonthName).length;
+      $('bd-summary').innerHTML = `
+        <div class="bd-stat"><strong>${thisMonthCount}</strong><span>Birthdays in ${thisMonthName}</span></div>
+        <div class="bd-stat pending"><strong>${all.filter(s => s.pending).length}</strong><span>Not yet redeemed</span></div>
+        <div class="bd-stat done"><strong>${all.filter(s => !s.pending).length}</strong><span>Redeemed</span></div>`;
+      $('bd-summary').hidden = false;
+      $('bd-filter-wrap').hidden = false;
+      status.textContent = 'Soonest birthday month first';
+      renderBirthdays();
+    } catch (err) {
+      console.error(err);
+      status.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+  $('bd-only').addEventListener('change', renderBirthdays);
+
+  // ---------- Admin: Portfolio Insights ----------
+  window.loadInsights = async () => {
+    const status = $('pi-status');
+    status.textContent = 'Loading…';
+    ['pi-total', 'pi-active', 'pi-skin', 'pi-tox', 'pi-exclusive', 'pi-redeemed', 'pi-expired'].forEach(id => $(id).textContent = '–');
+    ['pi-total-sub', 'pi-active-sub', 'pi-redeemed-sub', 'pi-expired-sub'].forEach(id => $(id).textContent = '');
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      const members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Members with at least one club whose renewal date has passed
+      const expired = findExpired(members);
+      const expiredMembers = new Set(expired.map(e => e.memberId)).size;
+      $('pi-expired').textContent = expiredMembers;
+      $('pi-expired-sub').textContent = expired.length > expiredMembers
+        ? `${expired.length} club renewals · tap to view`
+        : expiredMembers ? 'Tap to view' : 'All renewals up to date';
+      $('pi-expired').closest('.kpi').classList.toggle('has-expired', expiredMembers > 0);
+      const total = members.length;
+      const active = members.filter(m => m.membershipStatus === 'Active').length;
+      const pending = members.filter(m => m.membershipStatus !== 'Active').length;
+      const withClub = (club) => members.filter(m => m.clubs && Object.prototype.hasOwnProperty.call(m.clubs, club)).length;
+
+      $('pi-total').textContent = total;
+      $('pi-total-sub').textContent = total ? `${pending} pending` : 'No accounts yet';
+      $('pi-active').textContent = active;
+      $('pi-active-sub').textContent = total ? `${Math.round(active / total * 100)}% of all accounts` : '';
+      $('pi-skin').textContent = withClub('Skin Club');
+      $('pi-tox').textContent = withClub('Tox Club');
+      $('pi-exclusive').textContent = withClub('Exclusive Club');
+
+      // Every redeemed session across all members and clubs
+      const thisMonth = todayISO().slice(0, 7);
+      let redeemed = 0, redeemedThisMonth = 0;
+      members.forEach(m => Object.values(m.clubs || {}).forEach(c => {
+        (Array.isArray(c && c.redemptions) ? c.redemptions : []).forEach(r => {
+          redeemed++;
+          if (String(r && r.date).slice(0, 7) === thisMonth) redeemedThisMonth++;
+        });
+      }));
+      $('pi-redeemed').textContent = redeemed;
+      $('pi-redeemed-sub').textContent = `${redeemedThisMonth} this month`;
+
+      status.textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    } catch (err) {
+      console.error(err);
+      status.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load the figures. Please check your connection and try again.';
+    }
+  };
+
+  // ---------- Admin: Update Club Membership (redeem sessions) ----------
+  let redeemMember = null;
+  let redeemClub = '';
+
+  // Clubs on a member that have session counts
+  const clubsWithSessions = (m) => Object.keys(m.clubs || {})
+    .filter(c => Object.keys(m.clubs[c] || {}).some(k => isSessionKey(k) && typeof m.clubs[c][k] === 'number'))
+    .sort((a, b) => ((CLUBS.indexOf(a) + 1) || 99) - ((CLUBS.indexOf(b) + 1) || 99));
+
+  window.loadRedeemList = async () => {
+    const sel = $('rd-select');
+    const msg = $('rd-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    $('rd-panel').hidden = true;
+    redeemMember = null;
+    sel.innerHTML = '<option value="">Loading members…</option>';
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(m => clubsWithSessions(m).length)
+        .sort((a, b) => fullName(a).localeCompare(fullName(b)));
+      const counts = {};
+      list.forEach(m => { const k = fullName(m).toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+      sel.innerHTML = list.length
+        ? '<option value="">Select a member…</option>' + list.map(m => {
+            const dup = counts[fullName(m).toLowerCase()] > 1 && m.phoneNumber ? ` (…${m.phoneNumber.slice(-4)})` : '';
+            return `<option value="${m.id}">${escapeHTML(fullName(m) + dup)}</option>`;
+          }).join('')
+        : '<option value="">No members with club sessions yet</option>';
+    } catch (err) {
+      console.error(err);
+      sel.innerHTML = '<option value="">Could not load members</option>';
+      msg.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+
+  function renderRedeemPanel() {
+    const m = redeemMember;
+    const clubs = clubsWithSessions(m);
+    if (!clubs.includes(redeemClub)) redeemClub = clubs[0] || '';
+    $('rd-member-name').textContent = fullName(m);
+
+    // Club choice (only shown if they have more than one club with sessions)
+    $('rd-club-wrap').hidden = clubs.length < 2;
+    $('rd-club').innerHTML = clubs.map(c =>
+      `<button type="button" class="toggle${c === redeemClub ? ' selected' : ''}" data-value="${escapeHTML(c)}" aria-checked="${c === redeemClub}">${escapeHTML(c)}</button>`
+    ).join('');
+
+    const club = m.clubs[redeemClub] || {};
+    const order = (CLUB_DETAILS[redeemClub]?.sessions || []).map(s => s.key);
+    const keys = Object.keys(club).filter(k => isSessionKey(k) && typeof club[k] === 'number')
+      .sort((a, b) => ((order.indexOf(a) + 1) || 99) - ((order.indexOf(b) + 1) || 99));
+
+    $('rd-sessions').innerHTML = keys.map(k => {
+      const n = club[k];
+      const last = lastRedeemed(club.redemptions, k);
+      return `<li>
+        <span class="redeem-name">${escapeHTML(SESSION_LABELS[k] || k)}${last ? `<span class="session-last">Last redeemed ${formatISODate(last)}</span>` : ''}</span>
+        <span class="session-count${n ? '' : ' done'}">${n} pending</span>
+        <button type="button" class="redeem-btn" data-session="${k}" ${n > 0 ? '' : 'disabled'}>Redeem</button>
+      </li>`;
+    }).join('');
+
+    const history = (Array.isArray(club.redemptions) ? club.redemptions : [])
+      .slice().sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.recordedAt).localeCompare(String(a.recordedAt)));
+    $('rd-history').innerHTML = history.length
+      ? history.map(r => `<li><span>${escapeHTML(SESSION_LABELS[r.session] || r.session)}</span><span>${formatISODate(r.date)}</span></li>`).join('')
+      : '<li class="empty">No sessions redeemed yet</li>';
+  }
+
+  $('rd-select').addEventListener('change', async (e) => {
+    const id = e.target.value;
+    const msg = $('rd-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    $('rd-msg').textContent = '';
+    if (!id) { $('rd-panel').hidden = true; redeemMember = null; return; }
+    try {
+      const snap = await getDoc(doc(db, 'members', id));
+      if (!snap.exists()) { msg.textContent = 'This member no longer exists.'; $('rd-panel').hidden = true; return; }
+      redeemMember = { id, ...snap.data() };
+      redeemClub = '';
+      $('rd-date').value = todayISO();
+      $('rd-date').max = todayISO();
+      renderRedeemPanel();
+      $('rd-panel').hidden = false;
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Could not load this member. Please try again.';
+    }
+  });
+
+  $('rd-club').addEventListener('click', (e) => {
+    const t = e.target.closest('.toggle');
+    if (!t) return;
+    redeemClub = t.dataset.value;
+    $('rd-msg').textContent = '';
+    renderRedeemPanel();
+  });
+  $('rd-date').addEventListener('input', () => { $('rd-date').classList.remove('invalid'); $('rd-msg').textContent = ''; });
+
+  $('rd-sessions').addEventListener('click', (e) => {
+    const btn = e.target.closest('.redeem-btn');
+    if (!btn || btn.disabled || !redeemMember) return;
+    const m = redeemMember;
+    const club = redeemClub;
+    const key = btn.dataset.session;
+    const current = Number(m.clubs[club][key]) || 0;
+    const date = $('rd-date').value;
+    $('rd-msg').textContent = '';
+
+    if (!date) { $('rd-date').classList.add('invalid'); $('rd-msg').textContent = 'Please choose the redeemed date.'; return; }
+    if (date > todayISO()) { $('rd-date').classList.add('invalid'); $('rd-msg').textContent = 'The redeemed date cannot be in the future.'; return; }
+    if (current < 1) { $('rd-msg').textContent = 'There are no sessions left to redeem.'; return; }
+
+    const label = SESSION_LABELS[key] || key;
+    openModal('Redeem Session?', `
+      <p>Record <strong>1 ${escapeHTML(label)}</strong> session as redeemed for <strong>${escapeHTML(fullName(m))}</strong>?</p>
+      <dl class="changes">
+        <dt>Club</dt><dd>${escapeHTML(club)}</dd>
+        <dt>Redeemed Date</dt><dd>${formatISODate(date)}</dd>
+        <dt>Sessions Pending</dt><dd><del>${current}</del> → ${current - 1}</dd>
+      </dl>`);
+
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Saving…';
+      $('modal-msg').textContent = '';
+      const entry = {
+        session: key,
+        date,
+        recordedAt: new Date().toISOString(),
+        recordedBy: auth.currentUser ? auth.currentUser.email : null
+      };
+      try {
+        // Re-check the latest count so two admins can't take the same session twice
+        const fresh = await getDoc(doc(db, 'members', m.id));
+        const latest = Number(fresh.exists() && fresh.data().clubs?.[club]?.[key]) || 0;
+        if (latest < 1) throw Object.assign(new Error('none left'), { code: 'none-left' });
+
+        await updateDoc(doc(db, 'members', m.id),
+          new FieldPath('clubs', club, key), latest - 1,
+          new FieldPath('clubs', club, 'redemptions'), arrayUnion(entry));
+        closeModal(true);
+
+        m.clubs[club][key] = latest - 1;
+        m.clubs[club].redemptions = [...(m.clubs[club].redemptions || []), entry];
+        renderRedeemPanel();
+        $('rd-list-msg').textContent = `${label} redeemed for ${fullName(m)} on ${formatISODate(date)}. ${latest - 1} pending.`;
+        $('rd-list-msg').classList.add('ok');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes';
+        $('modal-msg').textContent = err.code === 'none-left'
+          ? 'There are no sessions left to redeem. Please reload the member.'
+          : err.code === 'permission-denied'
+            ? 'Permission denied. Please sign in again.'
+            : 'Could not save. Please try again.';
+      }
+    };
+  });
+
+  // ---------- Admin: Add Club to Membership ----------
+  let clubMember = null;
+
+  window.loadClubList = async () => {
+    const sel = $('cl-select');
+    const msg = $('cl-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    $('cl-form').hidden = true;
+    clubMember = null;
+    sel.innerHTML = '<option value="">Loading members…</option>';
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      const active = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(m => m.membershipStatus === 'Active')
+        .sort((a, b) => fullName(a).localeCompare(fullName(b)));
+      const counts = {};
+      active.forEach(m => { const k = fullName(m).toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+      sel.innerHTML = active.length
+        ? '<option value="">Select an active member…</option>' + active.map(m => {
+            const dup = counts[fullName(m).toLowerCase()] > 1 && m.phoneNumber ? ` (…${m.phoneNumber.slice(-4)})` : '';
+            return `<option value="${m.id}">${escapeHTML(fullName(m) + dup)}</option>`;
+          }).join('')
+        : '<option value="">No active members yet</option>';
+    } catch (err) {
+      console.error(err);
+      sel.innerHTML = '<option value="">Could not load members</option>';
+      msg.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+
+  function resetClubInputs() {
+    document.querySelectorAll('#cl-club .toggle').forEach(t => { t.classList.remove('selected'); t.setAttribute('aria-checked', 'false'); });
+    $('cl-club').classList.remove('invalid');
+    $('cl-details').hidden = true;
+    $('cl-details').innerHTML = '';
+    $('cl-bday').checked = false;           // Birthday Session defaults to No
+    $('cl-bday-state').textContent = 'No';
+    $('cl-bday-state').classList.remove('on');
+    $('cl-renewal').value = defaultRenewalISO();
+    $('cl-renewal').min = todayISO();
+    $('cl-renewal').classList.remove('invalid');
+    $('cl-msg').textContent = '';
+  }
+
+  // Default renewal: 1st of the current month, 12 months ahead (e.g. 21 Oct 2026 → 1 Oct 2027)
+  function defaultRenewalISO() {
+    const d = new Date();
+    return `${d.getFullYear() + 1}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+  }
+  $('cl-bday').addEventListener('change', () => {
+    const on = $('cl-bday').checked;
+    $('cl-bday-state').textContent = on ? 'Yes' : 'No';
+    $('cl-bday-state').classList.toggle('on', on);
+  });
+  $('cl-renewal').addEventListener('input', () => { $('cl-renewal').classList.remove('invalid'); $('cl-msg').textContent = ''; });
+
+  function showClubMember() {
+    const m = clubMember;
+    $('cl-member-name').textContent = fullName(m);
+    $('cl-current').innerHTML = clubListHTML(m.clubs) || '<li class="empty">No clubs yet</li>';
+  }
+
+  $('cl-select').addEventListener('change', async (e) => {
+    const id = e.target.value;
+    const msg = $('cl-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    resetClubInputs();
+    if (!id) { $('cl-form').hidden = true; clubMember = null; return; }
+    try {
+      const snap = await getDoc(doc(db, 'members', id));
+      if (!snap.exists()) { msg.textContent = 'This member no longer exists.'; $('cl-form').hidden = true; return; }
+      clubMember = { id, ...snap.data() };
+      if (clubMember.membershipStatus !== 'Active') {
+        msg.textContent = 'This member is no longer Active.';
+        $('cl-form').hidden = true;
+        return;
+      }
+      showClubMember();
+      $('cl-form').hidden = false;
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Could not load this member. Please try again.';
+    }
+  });
+
+  $('cl-club').addEventListener('click', (e) => {
+    const t = e.target.closest('.toggle');
+    if (!t) return;
+    document.querySelectorAll('#cl-club .toggle').forEach(x => {
+      const on = x === t;
+      x.classList.toggle('selected', on);
+      x.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    $('cl-club').classList.remove('invalid');
+    $('cl-msg').textContent = '';
+    // Show what comes with the selected club
+    $('cl-details').innerHTML = clubDetailsHTML(t.dataset.value);
+    $('cl-details').hidden = false;
+    if (clubMember?.clubs && Object.prototype.hasOwnProperty.call(clubMember.clubs, t.dataset.value)) {
+      $('cl-msg').textContent = `${fullName(clubMember)} already has ${t.dataset.value}.`;
+    } else if (clubMember) {
+      $('cl-msg').textContent = clubOverlapNote(clubMember, t.dataset.value);
+    }
+  });
+
+  // Exclusive Club already includes Skin and Tox, so flag any overlap
+  function clubOverlapNote(m, club) {
+    const has = (c) => m.clubs && Object.prototype.hasOwnProperty.call(m.clubs, c);
+    if (club === 'Exclusive Club') {
+      const both = ['Skin Club', 'Tox Club'].filter(has);
+      return both.length ? `Note: ${fullName(m)} already has ${both.join(' and ')}, which Exclusive Club includes.` : '';
+    }
+    if ((club === 'Skin Club' || club === 'Tox Club') && has('Exclusive Club')) {
+      return `Note: ${fullName(m)} already has Exclusive Club, which includes ${club}.`;
+    }
+    return '';
+  }
+
+  window.cancelClub = () => {
+    $('cl-select').value = '';
+    $('cl-form').hidden = true;
+    clubMember = null;
+    resetClubInputs();
+  };
+
+  window.submitClub = () => {
+    if (!clubMember) return;
+    const m = clubMember;
+    const club = document.querySelector('#cl-club .toggle.selected')?.dataset.value || '';
+    $('cl-msg').textContent = '';
+
+    if (!club) {
+      $('cl-club').classList.add('invalid');
+      $('cl-msg').textContent = 'Please select a club.';
+      return;
+    }
+    if (m.clubs && Object.prototype.hasOwnProperty.call(m.clubs, club)) {
+      $('cl-msg').textContent = `${fullName(m)} already has ${club}.`;
+      return;
+    }
+    const renewalDate = $('cl-renewal').value;
+    if (!renewalDate) {
+      $('cl-renewal').classList.add('invalid');
+      $('cl-msg').textContent = 'Please choose a renewal date.';
+      return;
+    }
+    if (renewalDate <= todayISO()) {
+      $('cl-renewal').classList.add('invalid');
+      $('cl-msg').textContent = 'The renewal date must be in the future.';
+      return;
+    }
+
+    // Club sessions, plus the Birthday Session if switched on
+    const includeBirthday = $('cl-bday').checked;
+    const sessionsToAdd = [...(CLUB_DETAILS[club]?.sessions || []), ...(includeBirthday ? [BIRTHDAY_SESSION] : [])];
+
+    openModal('Add Club?', `
+      <p>Add <strong>${escapeHTML(club)}</strong> to <strong>${escapeHTML(fullName(m))}</strong>'s membership?</p>
+      ${clubOverlapNote(m, club) ? `<p class="overlap-note">${escapeHTML(clubOverlapNote(m, club))}</p>` : ''}
+      <dl class="changes">
+        <dt>Renewal Date</dt><dd>${formatISODate(renewalDate)}</dd>
+        <dt>Birthday Session</dt><dd>${includeBirthday ? 'Included' : 'Not included'}</dd>
+      </dl>
+      <div class="club-details">${clubDetailsHTML(club)}</div>
+      ${sessionsToAdd.length ? `
+      <p>These sessions will be added as pending:</p>
+      <dl class="changes">${sessionsToAdd.map(s =>
+        `<dt>${escapeHTML(s.label)}</dt><dd>${s.pending}</dd>`).join('')}</dl>` : ''}`);
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Saving…';
+      $('modal-msg').textContent = '';
+      try {
+        // Only this club's entry is added; any other clubs are kept
+        // Default sessions pending for this club, e.g. Skin Club: analysis 1, bio 6 ...
+        const sessionDefaults = {};
+        sessionsToAdd.forEach(s => { sessionDefaults[s.key] = s.pending; });
+        await updateDoc(doc(db, 'members', m.id), new FieldPath('clubs', club), {
+          ...sessionDefaults,
+          renewalDate,
+          addedAt: serverTimestamp()
+        });
+        closeModal(true);
+        const now = new Date();
+        m.clubs = { ...(m.clubs || {}), [club]: { ...sessionDefaults, renewalDate, addedAt: { toDate: () => now } } };
+        showClubMember();
+        resetClubInputs();
+        $('cl-list-msg').textContent = `${club} added to ${fullName(m)}.`;
+        $('cl-list-msg').classList.add('ok');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes';
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'Permission denied. Please sign in again.'
+          : 'Could not save. Please try again.';
+      }
+    };
+  };
+
+  // ---------- Admin: Delete Membership Account ----------
+  let deleteMembers = [];
+  let deletingMember = null;
+
+  window.loadDeleteList = async () => {
+    const sel = $('del-select');
+    $('del-list-msg').textContent = '';
+    $('del-list-msg').classList.remove('ok');
+    $('del-summary').hidden = true;
+    deletingMember = null;
+    sel.innerHTML = '<option value="">Loading members…</option>';
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      deleteMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => fullName(a).localeCompare(fullName(b)));
+      const counts = {};
+      deleteMembers.forEach(m => { const k = fullName(m).toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+      sel.innerHTML = deleteMembers.length
+        ? '<option value="">Select a member…</option>' + deleteMembers.map(m => {
+            const dup = counts[fullName(m).toLowerCase()] > 1 && m.phoneNumber ? ` (…${m.phoneNumber.slice(-4)})` : '';
+            return `<option value="${m.id}">${escapeHTML(fullName(m) + dup)}</option>`;
+          }).join('')
+        : '<option value="">No members yet</option>';
+    } catch (err) {
+      console.error(err);
+      sel.innerHTML = '<option value="">Could not load members</option>';
+      const msg = $('del-list-msg');
+      msg.classList.remove('ok');
+      msg.textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+
+  $('del-select').addEventListener('change', async (e) => {
+    const id = e.target.value;
+    const msg = $('del-list-msg');
+    msg.textContent = '';
+    msg.classList.remove('ok');
+    if (!id) { $('del-summary').hidden = true; deletingMember = null; return; }
+    try {
+      const snap = await getDoc(doc(db, 'members', id));
+      if (!snap.exists()) { msg.textContent = 'This member no longer exists.'; $('del-summary').hidden = true; return; }
+      deletingMember = { id, ...snap.data() };
+      const m = deletingMember;
+      const status = m.membershipStatus || 'Pending';
+      $('del-name').textContent = fullName(m);
+      $('del-status').textContent = status;
+      $('del-status').className = 'status-badge ' + status.toLowerCase().replace(/\s+/g, '-');
+      $('del-created').textContent = formatDate(m.createdAt);
+      $('del-code').textContent = m.bookingCode || '—';
+      $('del-phone').textContent = m.phoneNumber || '—';
+      $('del-month').textContent = m.birthdayMonth || '—';
+      $('del-summary').hidden = false;
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Could not load this member. Please try again.';
+    }
+  });
+
+  window.deleteMemberAccount = () => {
+    if (!deletingMember) return;
+    const m = deletingMember;
+
+    openModal('Delete Account?', `
+      <p>You are about to permanently delete the membership account for <strong>${escapeHTML(fullName(m))}</strong>.</p>
+      <p>This will remove <strong>all records</strong> for this member and cannot be undone. They will need to register again to create a new account.</p>`,
+      'Yes, Delete', 'No, Keep');
+    $('modal').querySelector('.modal').classList.add('danger');
+    $('modal-yes').className = 'btn-danger';
+
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Deleting…';
+      $('modal-msg').textContent = '';
+      try {
+        // Remove the member and their phone number entry together
+        const batch = writeBatch(db);
+        batch.delete(doc(db, 'members', m.id));
+        if (m.phoneNumber) {
+          const phoneRef = doc(db, 'memberPhones', m.phoneNumber);
+          const phoneSnap = await getDoc(phoneRef);
+          if (phoneSnap.exists() && phoneSnap.data().memberId === m.id) batch.delete(phoneRef);
+        }
+        await batch.commit();
+
+        closeModal(true);
+        const name = fullName(m);
+        await window.loadDeleteList();
+        $('del-list-msg').textContent = `${name}'s account has been deleted.`;
+        $('del-list-msg').classList.add('ok');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes, Delete';
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'Permission denied. Please sign in again.'
+          : 'Could not delete the account. Please try again.';
+      }
+    };
+  };
+
+  // ---------- Admin: Update Membership Account ----------
+  let adminMembers = [];        // [{ id, ...data }]
+  let editingMember = null;     // the member currently shown
+
+  const formatDate = (ts) => ts && typeof ts.toDate === 'function'
+    ? ts.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
+  const fullName = (m) => `${m.firstName || ''} ${m.lastName || ''}`.trim();
+
+  window.loadMemberList = async () => {
+    const sel = $('up-select');
+    $('up-form').hidden = true;
+    $('up-list-msg').textContent = '';
+    $('up-list-msg').classList.remove('ok');
+    editingMember = null;
+    sel.innerHTML = '<option value="">Loading members…</option>';
+    try {
+      const snap = await getDocs(collection(db, 'members'));
+      adminMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => fullName(a).localeCompare(fullName(b)));
+
+      // If two members share a name, add the end of their phone number
+      const counts = {};
+      adminMembers.forEach(m => { const k = fullName(m).toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+      sel.innerHTML = adminMembers.length
+        ? '<option value="">Select a member…</option>' + adminMembers.map(m => {
+            const dup = counts[fullName(m).toLowerCase()] > 1 && m.phoneNumber ? ` (…${m.phoneNumber.slice(-4)})` : '';
+            return `<option value="${m.id}">${escapeHTML(fullName(m) + dup)}</option>`;
+          }).join('')
+        : '<option value="">No members yet</option>';
+    } catch (err) {
+      console.error(err);
+      sel.innerHTML = '<option value="">Could not load members</option>';
+      $('up-list-msg').textContent = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign in again.'
+        : 'Could not load members. Please check your connection and try again.';
+    }
+  };
+
+  function setStatusToggle(value) {
+    document.querySelectorAll('#up-status .toggle').forEach(t => {
+      const on = t.dataset.value === value;
+      t.classList.toggle('selected', on);
+      t.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  }
+  const selectedStatus = () => document.querySelector('#up-status .toggle.selected')?.dataset.value || '';
+
+  $('up-status').addEventListener('click', (e) => {
+    const t = e.target.closest('.toggle');
+    if (t) setStatusToggle(t.dataset.value);
+  });
+
+  async function showMemberForEdit(id) {
+    $('up-msg').textContent = '';
+    $('up-list-msg').textContent = '';
+    $('up-list-msg').classList.remove('ok');
+    if (!id) { $('up-form').hidden = true; editingMember = null; return; }
+    try {
+      // Fetch the latest copy, in case it changed since the list loaded
+      const snap = await getDoc(doc(db, 'members', id));
+      if (!snap.exists()) {
+        $('up-list-msg').textContent = 'This member no longer exists.';
+        $('up-form').hidden = true;
+        return;
+      }
+      editingMember = { id, ...snap.data() };
+      const m = editingMember;
+      $('up-first').value = m.firstName || '';
+      $('up-last').value = m.lastName || '';
+      $('up-created').value = formatDate(m.createdAt);
+      setStatusToggle(m.membershipStatus === 'Active' ? 'Active' : 'Pending');
+      $('up-code').value = m.bookingCode || '';
+      $('up-info').innerHTML =
+        `Phone: <strong>${escapeHTML(m.phoneNumber || '—')}</strong> &middot; Birthday month: <strong>${escapeHTML(m.birthdayMonth || '—')}</strong>`;
+      $('up-form').hidden = false;
+      updateWhatsAppButton();
+    } catch (err) {
+      console.error(err);
+      $('up-list-msg').textContent = 'Could not load this member. Please try again.';
+    }
+  }
+  $('up-select').addEventListener('change', (e) => showMemberForEdit(e.target.value));
+
+  // ---------- WhatsApp message (phones and tablets only) ----------
+  // Greeting depends on the time of day when the message is sent
+  function timeGreeting(d = new Date()) {
+    const h = d.getHours();
+    return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  }
+  const waMessage = () => `${timeGreeting()},
+
+Your Toni-Louise Clinic and Academy membership account has now been activated. Please log in to your account summary to retrieve your booking code.
+
+Once you have completed your sessions, you can return to your account summary shortly after to see your remaining and completed history`;
+
+  function isMobileDevice() {
+    const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const ua = /Android|iPhone|iPad|iPod|Mobile|Silk|Kindle|Opera Mini|IEMobile/i.test(navigator.userAgent || '');
+    const iPadOS = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;   // iPads report as Mac
+    return (touch && ua) || iPadOS;
+  }
+
+  // UK mobile 07xxxxxxxxx -> 447xxxxxxxxx for WhatsApp
+  const toWhatsAppNumber = (phone) => /^07\d{9}$/.test(phone || '') ? '44' + phone.slice(1) : '';
+
+  function updateWhatsAppButton() {
+    const wrap = $('up-wa-wrap');
+    const link = $('up-wa');
+    const hint = $('up-wa-hint');
+    if (!editingMember) { wrap.hidden = true; return; }
+    wrap.hidden = false;   // always shown; only usable on a phone or tablet
+
+    const savedCode = (editingMember.bookingCode || '').trim();
+    const typedCode = $('up-code').value.trim();
+    const number = toWhatsAppNumber(editingMember.phoneNumber);
+    let problem = '';
+    if (!isMobileDevice()) problem = 'Available on mobile only. Open this page on your phone to send.';
+    else if (!number) problem = 'This member does not have a valid mobile number.';
+    else if (!savedCode) problem = 'Add a booking code and save before sending.';
+    else if (typedCode !== savedCode) problem = 'Save your changes before sending.';
+
+    link.classList.toggle('disabled', !!problem);
+    link.setAttribute('aria-disabled', problem ? 'true' : 'false');
+    link.href = problem ? '#' : `https://wa.me/${number}?text=${encodeURIComponent(waMessage())}`;
+    hint.textContent = problem || `Opens WhatsApp to ${editingMember.phoneNumber} with the message ready to send.`;
+  }
+  $('up-code').addEventListener('input', updateWhatsAppButton);
+  $('up-wa').addEventListener('click', (e) => {
+    if ($('up-wa').classList.contains('disabled')) { e.preventDefault(); return; }
+    updateWhatsAppButton();   // rebuild at the moment of tapping so the greeting matches the time now
+  });
+
+  window.cancelMemberUpdate = () => {
+    $('up-select').value = '';
+    $('up-form').hidden = true;
+    $('up-msg').textContent = '';
+    editingMember = null;
+  };
+
+  window.saveMemberUpdate = async () => {
+    if (!editingMember) return;
+    const m = editingMember;
+    const newStatus = selectedStatus();
+    const newCode = $('up-code').value.trim();
+    const oldStatus = m.membershipStatus === 'Active' ? 'Active' : 'Pending';
+    const oldCode = (m.bookingCode || '').trim();
+    $('up-msg').textContent = '';
+
+    if (newStatus === oldStatus && newCode === oldCode) {
+      $('up-msg').textContent = 'There are no changes to save.';
+      return;
+    }
+
+    const row = (label, before, after) => before === after
+      ? `<dt>${label}</dt><dd>${escapeHTML(after || '—')}</dd>`
+      : `<dt>${label}</dt><dd><del>${escapeHTML(before || 'blank')}</del> → ${escapeHTML(after || 'blank')}</dd>`;
+    const note = newStatus === 'Pending' && newCode
+      ? '<p>The member will not see the booking code while their status is Pending.</p>'
+      : newStatus === 'Active' && !newCode
+        ? '<p>The member will see “Being prepared” until a booking code is added.</p>'
+        : '';
+
+    openModal('Confirm Changes', `
+      <p>Update the account for <strong>${escapeHTML(fullName(m))}</strong>?</p>
+      <dl class="changes">
+        ${row('Status', oldStatus, newStatus)}
+        ${row('Booking Code', oldCode, newCode)}
+      </dl>
+      ${note}`);
+
+    $('modal-yes').onclick = async () => {
+      const yesBtn = $('modal-yes');
+      yesBtn.disabled = true;
+      yesBtn.textContent = 'Saving…';
+      $('modal-msg').textContent = '';
+      try {
+        await updateDoc(doc(db, 'members', m.id), {
+          membershipStatus: newStatus,
+          bookingCode: newCode
+        });
+        closeModal(true);
+        Object.assign(m, { membershipStatus: newStatus, bookingCode: newCode });
+        updateWhatsAppButton();
+        const listed = adminMembers.find(x => x.id === m.id);
+        if (listed) Object.assign(listed, { membershipStatus: newStatus, bookingCode: newCode });
+        $('up-list-msg').textContent = `${fullName(m)}'s account has been updated.`;
+        $('up-list-msg').classList.add('ok');
+      } catch (err) {
+        console.error(err);
+        yesBtn.disabled = false;
+        yesBtn.textContent = 'Yes';
+        $('modal-msg').textContent = err.code === 'permission-denied'
+          ? 'Permission denied. Please sign in again.'
+          : 'Could not save the changes. Please try again.';
+      }
+    };
+  };
+</script>
+</body>
+</html>
